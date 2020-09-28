@@ -7,6 +7,15 @@ import javafx.scene.image.Image;
 
 public abstract class Person {
     private double positionX;
+
+    public double getPositionX() {
+        return positionX;
+    }
+
+    public double getPositionY() {
+        return positionY;
+    }
+
     private double positionY;
     private double velocityX;
     private double velocityY;
