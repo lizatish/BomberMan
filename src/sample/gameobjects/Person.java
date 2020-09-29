@@ -7,15 +7,6 @@ import javafx.scene.image.Image;
 
 public abstract class Person {
     private double positionX;
-
-    public double getPositionX() {
-        return positionX;
-    }
-
-    public double getPositionY() {
-        return positionY;
-    }
-
     private double positionY;
     private double velocityX;
     private double velocityY;
@@ -68,7 +59,13 @@ public abstract class Person {
     public Rectangle2D getBoundary() {
         return new Rectangle2D(positionX, positionY, width, height);
     }
+    public double getPositionX() {
+        return positionX;
+    }
 
+    public double getPositionY() {
+        return positionY;
+    }
     public String toString() {
         return " Position: [" + positionX + "," + positionY + "]"
                 + " Velocity: [" + velocityX + "," + velocityY + "]";
