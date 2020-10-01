@@ -4,6 +4,7 @@ package sample.gameobjects;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import sample.Model;
 
 public abstract class Person {
     private double positionX;
@@ -14,9 +15,12 @@ public abstract class Person {
     private double height;
     private Image image;
 
-    Person() {
-        positionX = 0;
-        positionY = 0;
+    Model model;
+
+    Person(double x, double y, Model model) {
+        this.model = model;
+        positionX = x;
+        positionY = y;
         velocityX = 0;
         velocityY = 0;
     }
@@ -45,6 +49,7 @@ public abstract class Person {
     public void addVelocity(double x, double y) {
         velocityX += x;
         velocityY += y;
+        model.update();
     }
 
     public void update(double time) {
@@ -56,13 +61,9 @@ public abstract class Person {
         gc.drawImage(image, positionX, positionY);
     }
 
-    public Rectangle2D getBoundary() {
-        return new Rectangle2D(positionX, positionY, width, height);
-    }
     public double getPositionX() {
         return positionX;
     }
-
     public double getPositionY() {
         return positionY;
     }

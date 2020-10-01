@@ -1,5 +1,6 @@
 package sample.gameobjects;
 
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
@@ -14,7 +15,6 @@ public class Wall {
     public Wall(double x, double y) {
         positionX = x;
         positionY = y;
-
         setImage("file:/home/liza/IdeaProjects/MVC_/src/sample/resources/wall.jpg");
     }
 
@@ -25,6 +25,7 @@ public class Wall {
     public void render(GraphicsContext gc) {
         gc.drawImage(image, positionX, positionY);
     }
+
     public double getPositionX() {
         return positionX;
     }
