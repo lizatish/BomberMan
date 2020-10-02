@@ -28,7 +28,7 @@ public class Model {
 
 
     public void update() {
-        EventData data = new EventData(mainHero.getPositionX(), mainHero.getPositionY());
+        EventData data = new EventData(mainHero.getPositionX(), mainHero.getPositionY(), walls);
         eventManager.notifyAllListeners(data);
     }
 

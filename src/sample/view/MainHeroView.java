@@ -4,7 +4,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import sample.EventData;
 import sample.EventListener;
-import sample.gameobjects.MainHero;
 
 public class MainHeroView implements EventListener {
     private Image image;
@@ -21,6 +20,10 @@ public class MainHeroView implements EventListener {
     }
 
     public void render(EventData data) {
+        final double FIELD_WIDTH = 1260; // TODO: Это не тут
+        final double FIELD_HEIGHT = 780;
+
+        gc.clearRect(0, 0, FIELD_WIDTH, FIELD_HEIGHT);
         gc.drawImage(image, data.getX(), data.getY());
     }
 

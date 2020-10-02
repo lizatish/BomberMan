@@ -6,6 +6,8 @@ import sample.EventData;
 import sample.EventListener;
 import sample.gameobjects.Wall;
 
+import java.util.ArrayList;
+
 public class WallView implements EventListener {
     private Image image;
     GraphicsContext gc;
@@ -19,7 +21,11 @@ public class WallView implements EventListener {
     }
 
     public void render(EventData data) {
-        gc.drawImage(image, data.getX(), data.getY());
+        ArrayList<Wall> walls = data.getWalls();
+
+        for(Wall wall: walls){
+            gc.drawImage(image, wall.getPositionX(), wall.getPositionY());
+        }
     }
 
     @Override

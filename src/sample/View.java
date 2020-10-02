@@ -8,6 +8,7 @@ import javafx.stage.Stage;
 import sample.gameobjects.MainHero;
 import sample.gameobjects.Wall;
 import sample.view.MainHeroView;
+import sample.view.WallView;
 
 import java.util.ArrayList;
 
@@ -21,6 +22,10 @@ public class View implements EventListener {
 
     private Controller controller;
     MainHeroView mainHV;
+    ArrayList<WallView> walls = new ArrayList<>();
+
+    Stage primaryStage;
+
     public View(Controller controller) {
         this.controller = controller;
     }
@@ -34,13 +39,14 @@ public class View implements EventListener {
         System.out.println("Im update!");
 
         mainHV.render(data);
-//        for (Wall wall : model.walls) {
-//            wall.render(gc);
-//        }
+
+        for (WallView wall : walls) {
+            wall.render(data);
+        }
     }
 
     public void start() {
-        Stage primaryStage = new Stage();
+        primaryStage = new Stage();
 
         primaryStage.setTitle("BomberMan");
 
@@ -54,8 +60,14 @@ public class View implements EventListener {
         root.getChildren().add(canvas);
 
         gc = canvas.getGraphicsContext2D();
-        mainHV= new MainHeroView(gc);
+        mainHV = new MainHeroView(gc);
 
+        for (int i = 60; i < FIELD_HEIGHT; i += 2 * FIELD_STEP) {
+            for (int j = 60; j < FIELD_WIDTH; j += 2 * FIELD_STEP) {
+                WallView temp = new WallView(gc);
+                walls.add(temp);
+            }
+        }
 
         ArrayList<String> input = new ArrayList<>();
         theScene.setOnKeyPressed(
@@ -73,7 +85,6 @@ public class View implements EventListener {
 
 
         controller.checkUserChanges(input);
-
 
         primaryStage.show();
 
