@@ -1,9 +1,7 @@
-package sample;
+package sample.eventdata;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class EventManager {
     private List<EventListener> listeners;

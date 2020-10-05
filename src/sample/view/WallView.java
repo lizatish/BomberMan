@@ -2,15 +2,16 @@ package sample.view;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import sample.EventData;
-import sample.EventListener;
-import sample.gameobjects.Wall;
+import sample.eventdata.EventData;
+import sample.eventdata.EventListener;
+import sample.eventdata.WallData;
 
 import java.util.ArrayList;
 
 public class WallView implements EventListener {
     private Image image;
     GraphicsContext gc;
+
     public WallView(GraphicsContext gcInit) {
         gc = gcInit;
         setImage("file:/home/liza/IdeaProjects/MVC_/src/sample/resources/wall.jpg");
@@ -21,9 +22,9 @@ public class WallView implements EventListener {
     }
 
     public void render(EventData data) {
-        ArrayList<Wall> walls = data.getWalls();
+        ArrayList<WallData> walls = data.getWallsData();
 
-        for(Wall wall: walls){
+        for (WallData wall : walls) {
             gc.drawImage(image, wall.getPositionX(), wall.getPositionY());
         }
     }

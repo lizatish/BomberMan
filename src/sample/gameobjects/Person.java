@@ -1,23 +1,18 @@
 package sample.gameobjects;
 
 
-import javafx.geometry.Rectangle2D;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
-import sample.Model;
+import sample.Bombers;
+import sample.move.Movable;
 
-public abstract class Person {
+public abstract class Person implements Movable {
     private double positionX;
     private double positionY;
     private double velocityX;
     private double velocityY;
-    private double width;
-    private double height;
-    private Image image;
+    private double speed = 50;
+    Bombers model;
 
-    Model model;
-
-    Person(double x, double y, Model model) {
+    Person(double x, double y, Bombers model) {
         this.model = model;
         positionX = x;
         positionY = y;
@@ -25,50 +20,54 @@ public abstract class Person {
         velocityY = 0;
     }
 
-    public void setImage(Image i) {
-        image = i;
-        width = i.getWidth();
-        height = i.getHeight();
-    }
-
-    public void setImage(String filename) {
-        Image i = new Image(filename, 60, 60, false, false);
-        setImage(i);
-    }
-
-    public void setPosition(double x, double y) {
-        positionX = x;
-        positionY = y;
-    }
-
-    public void setVelocity(double x, double y) {
-        velocityX = x;
-        velocityY = y;
-    }
-
-    public void addVelocity(double x, double y) {
-        velocityX += x;
-        velocityY += y;
-        model.update();
-    }
-
     public void update(double time) {
         positionX += velocityX * time;
         positionY += velocityY * time;
     }
 
-    public void render(GraphicsContext gc) {
-        gc.drawImage(image, positionX, positionY);
+    @Override
+    public void moveUp() {
+        setVelocity(0, -speed);
+    }
+
+    @Override
+    public void moveDown() {
+        setVelocity(0, speed);
+    }
+
+    @Override
+    public void moveLeft() {
+        setVelocity(-speed, 0);
+    }
+
+    @Override
+    public void moveRight() {
+        setVelocity(speed, 0);
+    }
+
+    @Override
+    public void stop() {
+        setVelocity(0, 0);
+    }
+
+    private void setVelocity(double x, double y) {
+        velocityX = x;
+        velocityY = y;
+        model.update();
+    }
+
+    public String toString() {
+        return " Position: [" + positionX + "," + positionY + "]"
+                + " Velocity: [" + velocityX + "," + velocityY + "]";
     }
 
     public double getPositionX() {
         return positionX;
     }
+
     public double getPositionY() {
         return positionY;
     }
-    public String toString() {
-        return " Position: [" + positionX + "," + positionY + "]"
-                + " Velocity: [" + velocityX + "," + velocityY + "]";
-    }
+
+
 }

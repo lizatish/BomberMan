@@ -1,11 +1,10 @@
-package sample.gameobjects;
+package sample.eventdata;
 
-public class Wall {
-
+public class MainHeroData {
     private final double positionX;
     private final double positionY;
 
-    public Wall(double x, double y) {
+    public MainHeroData(double x, double y) {
         positionX = x;
         positionY = y;
     }
@@ -13,8 +12,8 @@ public class Wall {
     public double getPositionX() {
         return positionX;
     }
+
     public double getPositionY() {
         return positionY;
     }
-
 }

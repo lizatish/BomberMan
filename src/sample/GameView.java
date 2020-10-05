@@ -4,29 +4,26 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import sample.gameobjects.MainHero;
-import sample.gameobjects.Wall;
+import sample.eventdata.EventData;
+import sample.eventdata.EventListener;
 import sample.view.MainHeroView;
 import sample.view.WallView;
 
 import java.util.ArrayList;
 
 
-public class View implements EventListener {
-
-    private final double FIELD_WIDTH = 1260;
-    private final double FIELD_HEIGHT = 780;
-    private final double FIELD_STEP = 60;
+public class GameView implements EventListener {
     GraphicsContext gc;
 
-    private Controller controller;
+    private final GameController controller;
     MainHeroView mainHV;
     ArrayList<WallView> walls = new ArrayList<>();
 
     Stage primaryStage;
 
-    public View(Controller controller) {
+    public GameView(GameController controller) {
         this.controller = controller;
     }
 
@@ -39,7 +36,6 @@ public class View implements EventListener {
         System.out.println("Im update!");
 
         mainHV.render(data);
-
         for (WallView wall : walls) {
             wall.render(data);
         }
@@ -47,29 +43,33 @@ public class View implements EventListener {
 
     public void start() {
         primaryStage = new Stage();
-
         primaryStage.setTitle("BomberMan");
-
         Group root = new Group();
-        Scene theScene = new Scene(root);
+        Scene theScene = new Scene(root, Settings.FIELD_WIDTH, Settings.FIELD_HEIGHT, Color.LIMEGREEN);
 
         primaryStage.setScene(theScene);
 
-
-        Canvas canvas = new Canvas(FIELD_WIDTH, FIELD_HEIGHT);
+        Canvas canvas = new Canvas(Settings.FIELD_WIDTH, Settings.FIELD_HEIGHT);
         root.getChildren().add(canvas);
-
         gc = canvas.getGraphicsContext2D();
-        mainHV = new MainHeroView(gc);
 
-        for (int i = 60; i < FIELD_HEIGHT; i += 2 * FIELD_STEP) {
-            for (int j = 60; j < FIELD_WIDTH; j += 2 * FIELD_STEP) {
+        mainHV = new MainHeroView(gc);
+        for (int i = 60; i < Settings.FIELD_HEIGHT; i += 2 * Settings.FIELD_STEP) {
+            for (int j = 60; j < Settings.FIELD_WIDTH; j += 2 * Settings.FIELD_STEP) {
                 WallView temp = new WallView(gc);
                 walls.add(temp);
             }
         }
 
         ArrayList<String> input = new ArrayList<>();
+        theScene.setOnKeyPressed(
+                e -> {
+                    String code = e.getCode().toString();
+                    if (!input.contains(code))
+                        input.add(code);
+                });
+
+
         theScene.setOnKeyPressed(
                 e -> {
                     String code = e.getCode().toString();
@@ -85,8 +85,7 @@ public class View implements EventListener {
 
 
         controller.checkUserChanges(input);
-
         primaryStage.show();
-
     }
+
 }
