@@ -1,9 +1,9 @@
-package sample.move;
+package sample.Controller.move;
 
 
 import sample.Settings;
-import sample.gameobjects.MainHero;
-import sample.gameobjects.Wall;
+import sample.Model.gameobjects.MainHero;
+import sample.Model.gameobjects.Wall;
 
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;

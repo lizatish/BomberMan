@@ -1,4 +1,4 @@
-package sample.move;
+package sample.Controller.move;
 
 public interface Movable {
     void moveUp();

@@ -1,4 +1,4 @@
-package sample.view;
+package sample.View;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -14,7 +14,7 @@ public class WallView implements EventListener {
 
     public WallView(GraphicsContext gcInit) {
         gc = gcInit;
-        setImage("file:/home/liza/IdeaProjects/MVC_/src/sample/resources/wall.jpg");
+        setImage("file:/home/liza/IdeaProjects/MVC_/src/sample/View/resources/wall.jpg");
     }
 
     public void setImage(String filename) {
@@ -31,6 +31,7 @@ public class WallView implements EventListener {
 
     @Override
     public void update(EventData data) {
+        System.out.println("1");
         render(data);
     }
 }

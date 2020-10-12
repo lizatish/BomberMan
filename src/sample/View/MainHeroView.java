@@ -1,4 +1,4 @@
-package sample.view;
+package sample.View;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -10,11 +10,11 @@ import sample.eventdata.MainHeroData;
 public class MainHeroView implements EventListener {
     private Image image;
 
-    GraphicsContext gc;
+    private GraphicsContext gc;
 
     public MainHeroView(GraphicsContext gcInit) {
         gc = gcInit;
-        setImage("file:/home/liza/IdeaProjects/MVC_/src/sample/resources/mainHero.png");
+        setImage("file:/home/liza/IdeaProjects/MVC_/src/sample/View/resources/mainHero.png");
     }
 
     public void setImage(String filename) {
@@ -29,6 +29,7 @@ public class MainHeroView implements EventListener {
 
     @Override
     public void update(EventData data) {
+        System.out.println("MainHero update!");
         render(data);
     }
 }

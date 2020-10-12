@@ -1,8 +1,8 @@
-package sample.gameobjects;
+package sample.Model.gameobjects;
 
 
-import sample.Bombers;
-import sample.move.Movable;
+import sample.Model.Bombers;
+import sample.Controller.move.Movable;
 
 public abstract class Person implements Movable {
     private double positionX;
@@ -68,6 +68,4 @@ public abstract class Person implements Movable {
     public double getPositionY() {
         return positionY;
     }
-
-
 }

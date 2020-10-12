@@ -1,7 +1,8 @@
-package sample;
+package sample.Controller;
 
 import javafx.animation.AnimationTimer;
-import sample.move.MovableEventType;
+import sample.Model.Bombers;
+import sample.Controller.move.MovableEventType;
 
 import java.util.ArrayList;
 
@@ -16,10 +17,9 @@ public class GameController {
 //        model.start();
     }
 
-    public void startMoving(MovableEventType movableEventType) {
-        movableEventType.startMoving(model.getMainHero());
-        System.out.println(111111111);
-    }
+//    public void startMoving(MovableEventType movableEventType) {
+//        movableEventType.startMoving(model.getMainHero());
+//    }
 
 //    public void stopMoving(MovableEventType movableEventType) {
 //        movableEventType.stopMoving(model.getMainHero());

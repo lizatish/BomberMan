@@ -1,6 +1,6 @@
-package sample.gameobjects;
+package sample.Model.gameobjects;
 
-import sample.Bombers;
+import sample.Model.Bombers;
 
 public class MainHero extends Person {
 

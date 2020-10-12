@@ -1,7 +1,5 @@
 package sample.eventdata;
 
-import sample.gameobjects.Wall;
-
 import java.util.ArrayList;
 
 public class EventData {

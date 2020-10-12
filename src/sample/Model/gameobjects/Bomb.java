@@ -1,4 +1,4 @@
-package sample.gameobjects;
+package sample.Model.gameobjects;
 
 public class Bomb {
     private int x;

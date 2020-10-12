@@ -1,11 +1,12 @@
-package sample;
+package sample.Model;
 
+import sample.Settings;
 import sample.eventdata.EventData;
 import sample.eventdata.EventManager;
 import sample.eventdata.MainHeroData;
 import sample.eventdata.WallData;
-import sample.gameobjects.MainHero;
-import sample.gameobjects.Wall;
+import sample.Model.gameobjects.MainHero;
+import sample.Model.gameobjects.Wall;
 
 import java.util.ArrayList;
 
