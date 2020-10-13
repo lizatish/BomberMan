@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="e8872d2b-4394-4943-b7db-dc45cc9c44b8" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/MVC_.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/JavaFXApp.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/description.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/MVC_/sample/Controller.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/MVC_/sample/LongValue.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/MVC_/sample/Main$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/MVC_/sample/Main.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/MVC_/sample/Model.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/MVC_/sample/gameobjects/Bomb.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/MVC_/sample/gameobjects/Enemy.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/MVC_/sample/gameobjects/Field.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/MVC_/sample/gameobjects/MainHero.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/MVC_/sample/gameobjects/Person.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/MVC_/sample/gameobjects/Wall.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/MVC_/sample/resources/mainHero.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/MVC_/sample/resources/wall.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/MVC_/sample/sample.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/MVC_/sample/sample.fxml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1ioagcJRzVwEZ5p4w73Y0jlQbzz" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="last_opened_file_path" value="$USER_HOME$/javafx-sdk-11/lib" />
+    <property name="project.structure.last.edited" value="Libraries" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+  </component>
+  <component name="RunManager">
+    <configuration name="Main" type="Application" factoryName="Application" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="sample.Main" />
+      <module name="MVC_" />
+      <option name="VM_PARAMETERS" value="--module-path $USER_HOME$/javafx-sdk-11/lib --add-modules javafx.controls,javafx.fxml" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="sample.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="e8872d2b-4394-4943-b7db-dc45cc9c44b8" name="Default Changelist" comment="" />
+      <created>1602576513054</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1602576513054</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="72" y="372" width="1084" height="708" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1602576963399">
+      <screen x="72" y="27" width="1848" height="1053" />
+    </state>
+    <state x="72" y="372" width="1084" height="708" key="#com.intellij.execution.impl.EditConfigurationsDialog/72.27.1848.1053@72.27.1848.1053" timestamp="1602576963399" />
+    <state x="211" y="300" width="735" height="520" key="FileChooserDialogImpl" timestamp="1602577020217">
+      <screen x="72" y="27" width="1848" height="1053" />
+    </state>
+    <state x="211" y="300" width="735" height="520" key="FileChooserDialogImpl/72.27.1848.1053@72.27.1848.1053" timestamp="1602577020217" />
+    <state x="72" y="228" width="1024" height="852" key="SettingsEditor" timestamp="1602577041927">
+      <screen x="72" y="27" width="1848" height="1053" />
+    </state>
+    <state x="72" y="228" width="1024" height="852" key="SettingsEditor/72.27.1848.1053@72.27.1848.1053" timestamp="1602577041927" />
+  </component>
+</project>
