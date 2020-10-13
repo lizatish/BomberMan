@@ -31,7 +31,7 @@ public class WallView implements EventListener {
 
     @Override
     public void update(EventData data) {
-        System.out.println("1");
+//        System.out.println("1");
         render(data);
     }
 }

@@ -19,19 +19,19 @@ public enum MovableEventType {
         }
 
         @Override
-        public boolean canMove(ArrayList<Wall> walls, MainHero mainHero) {
+        public boolean canMove(List<Wall> walls, MainHero mainHero) {
             if (mainHero.getPositionY() - 1 < 0) {
                 return false;
             }
 
-            ArrayList<Integer> dir = new ArrayList<>(Arrays.asList(0, 1));
+            List<Integer> dir = new ArrayList<>(Arrays.asList(0, 1));
             for (Wall wall : walls) {
                 double wallPositionX = wall.getPositionX();
                 double wallPositionY = wall.getPositionY();
                 double heroPositionX = mainHero.getPositionX();
                 double heroPositionY = mainHero.getPositionY();
 
-                if (wallPositionX > mainHero.getPositionY()) {
+                if (wallPositionY > mainHero.getPositionY()) {
                     continue;
                 }
 
@@ -51,12 +51,12 @@ public enum MovableEventType {
         }
 
         @Override
-        public boolean canMove(ArrayList<Wall> walls, MainHero mainHero) {
+        public boolean canMove(List<Wall> walls, MainHero mainHero) {
             if (mainHero.getPositionX() - 1 < 0) {
                 return false;
             }
 
-            ArrayList<Integer> dir = new ArrayList<>(Arrays.asList(1, 0));
+            List<Integer> dir = new ArrayList<>(Arrays.asList(1, 0));
             for (Wall wall : walls) {
                 double wallPositionX = wall.getPositionX();
                 double wallPositionY = wall.getPositionY();
@@ -85,19 +85,19 @@ public enum MovableEventType {
         }
 
         @Override
-        public boolean canMove(ArrayList<Wall> walls, MainHero mainHero) {
+        public boolean canMove(List<Wall> walls, MainHero mainHero) {
             if (mainHero.getPositionY() + Settings.FIELD_STEP + 1 > Settings.FIELD_HEIGHT) {
                 return false;
             }
 
-            ArrayList<Integer> dir = new ArrayList<>(Arrays.asList(0, 1));
+            List<Integer> dir = new ArrayList<>(Arrays.asList(0, 1));
             for (Wall wall : walls) {
                 double wallPositionX = wall.getPositionX();
                 double wallPositionY = wall.getPositionY();
                 double heroPositionX = mainHero.getPositionX();
                 double heroPositionY = mainHero.getPositionY();
 
-                if (wallPositionX < mainHero.getPositionY()) {
+                if (wallPositionY < mainHero.getPositionY()) {
                     continue;
                 }
 
@@ -119,12 +119,12 @@ public enum MovableEventType {
         }
 
         @Override
-        public boolean canMove(ArrayList<Wall> walls, MainHero mainHero) {
+        public boolean canMove(List<Wall> walls, MainHero mainHero) {
             if (mainHero.getPositionX() + Settings.FIELD_STEP + 1 > Settings.FIELD_WIDTH) {
                 return false;
             }
 
-            ArrayList<Integer> dir = new ArrayList<>(Arrays.asList(1, 0));
+            List<Integer> dir = new ArrayList<>(Arrays.asList(1, 0));
             for (Wall wall : walls) {
                 double wallPositionX = wall.getPositionX();
                 double wallPositionY = wall.getPositionY();
@@ -150,7 +150,7 @@ public enum MovableEventType {
         this.keyNames = keyNames;
     }
 
-    public static MovableEventType getMovableOperationByKeyName(ArrayList<String> keyNames) {
+    public static MovableEventType getMovableOperationByKeyName(List<String> keyNames) {
 
         MovableEventType result = null;
         if (!keyNames.isEmpty()) {
@@ -171,6 +171,6 @@ public enum MovableEventType {
 
     public abstract void startMoving(Movable entity);
 
-    public abstract boolean canMove(ArrayList<Wall> walls, MainHero mainHero);
+    public abstract boolean canMove(List<Wall> walls, MainHero mainHero);
 
 }

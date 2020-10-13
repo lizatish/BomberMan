@@ -29,7 +29,7 @@ public class MainHeroView implements EventListener {
 
     @Override
     public void update(EventData data) {
-        System.out.println("MainHero update!");
+//        System.out.println("MainHero update!");
         render(data);
     }
 }

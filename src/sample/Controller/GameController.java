@@ -5,6 +5,7 @@ import sample.Model.Bombers;
 import sample.Controller.move.MovableEventType;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class GameController {
     private final Bombers model;
@@ -13,19 +14,7 @@ public class GameController {
         this.model = model;
     }
 
-    public void start() {
-//        model.start();
-    }
-
-//    public void startMoving(MovableEventType movableEventType) {
-//        movableEventType.startMoving(model.getMainHero());
-//    }
-
-//    public void stopMoving(MovableEventType movableEventType) {
-//        movableEventType.stopMoving(model.getMainHero());
-//    }
-
-    public void checkUserChanges(ArrayList<String> input) {
+    public void checkUserChanges(List<String> input) {
         final Long[] lastNanoTime = {System.nanoTime()};
         new AnimationTimer() {
             public void handle(long currentNanoTime) {
@@ -46,5 +35,4 @@ public class GameController {
             }
         }.start();
     }
-
 }
