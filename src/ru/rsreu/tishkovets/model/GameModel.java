@@ -2,6 +2,7 @@ package ru.rsreu.tishkovets.model;
 
 import javafx.util.Pair;
 import ru.rsreu.tishkovets.Settings;
+import ru.rsreu.tishkovets.controller.move.MovableEventType;
 import ru.rsreu.tishkovets.events.data.BoxData;
 import ru.rsreu.tishkovets.events.data.EventData;
 import ru.rsreu.tishkovets.events.EventManager;
@@ -14,11 +15,12 @@ import ru.rsreu.tishkovets.model.gameobjects.Wall;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class GameModel {
     private final EventManager eventManager;
 
-    private final MainHero mainHero = new MainHero(0, 0, Settings.OBJECT_SIZE, this);
+    private final MainHero mainHero = new MainHero(0, 0, Settings.OBJECT_SIZE - 4, this);
     private final List<Wall> walls = new ArrayList<>();
     private final List<Box> boxes = new ArrayList<>();
 
@@ -36,7 +38,7 @@ public class GameModel {
         }
         for (double i = horizontalStep; i < Settings.FIELD_WIDTH; i += 2 * horizontalStep) {
             for (double j = Settings.OBJECT_SIZE; j < Settings.FIELD_HEIGHT; j += 2 * Settings.OBJECT_SIZE) {
-                Wall temp = new Wall(i, j);
+                Wall temp = new Wall(i, j, Settings.OBJECT_SIZE);
                 walls.add(temp);
             }
         }
@@ -53,11 +55,64 @@ public class GameModel {
                 continue;
             }
 
-            if (!walls.contains(new Wall(x, y))) {
-                boxes.add(new Box(x, y));
+            if (!walls.contains(new Wall(x, y, Settings.OBJECT_SIZE))) {
+                boxes.add(new Box(x, y, Settings.OBJECT_SIZE));
                 currentBoxesNumber += 1;
             }
         }
+    }
+
+    public boolean canMove(MovableEventType eventType) {
+
+        int mainHeroPositionX = (int) mainHero.getPositionX();
+        int mainHeroPositionY = (int) mainHero.getPositionY();
+        int mainHeroSize = (int) mainHero.getSize();
+        double mainHeroSpeed = mainHero.getSpeed();
+
+        if (eventType == MovableEventType.UP) {
+            mainHeroPositionY -= mainHeroSpeed;
+            if (mainHeroPositionY < 0) {
+                return false;
+            }
+        } else if (eventType == MovableEventType.DOWN) {
+            mainHeroPositionY += mainHeroSpeed;
+            if (mainHeroPositionY + mainHeroSize > Settings.FIELD_HEIGHT) {
+                return false;
+            }
+        } else if (eventType == MovableEventType.LEFT) {
+            mainHeroPositionX -= mainHeroSpeed;
+            if (mainHeroPositionX < 0) {
+                return false;
+            }
+        } else if (eventType == MovableEventType.RIGHT) {
+            mainHeroPositionX += mainHeroSpeed;
+            if (mainHeroPositionX + mainHeroSize > Settings.FIELD_WIDTH) {
+                return false;
+            }
+        }
+
+        Rectangle mainHeroRect = new Rectangle(mainHeroPositionX, mainHeroPositionY, mainHeroSize, mainHeroSize);
+        for (Wall wall : walls) {
+            int wallPositionX = (int) wall.getPositionX();
+            int wallPositionY = (int) wall.getPositionY();
+            int wallSize = (int) wall.getSize();
+            Rectangle wallRect = new Rectangle(wallPositionX, wallPositionY, wallSize, wallSize);
+
+            if (mainHeroRect.intersects(wallRect)) {
+                return false;
+            }
+        }
+        for (Box box : boxes) {
+            int boxPositionX = (int) box.getPositionX();
+            int boxPositionY = (int) box.getPositionY();
+            int boxSize = (int) box.getSize();
+            Rectangle wallRect = new Rectangle(boxPositionX, boxPositionY, boxSize, boxSize);
+
+            if (mainHeroRect.intersects(wallRect)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public void update() {
@@ -91,36 +146,6 @@ public class GameModel {
     public List<Box> getBoxes() {
         return boxes;
     }
-
-
-    public boolean canMove() {
-        if (mainHero.getPositionX() + Settings.OBJECT_SIZE + 1 > Settings.FIELD_WIDTH) {
-            return false;
-        }
-
-        Rectangle mainHeroRect = new Rectangle((int) mainHero.getPositionX(), (int) mainHero.getPositionY(),
-                (int) Settings.OBJECT_SIZE, (int) Settings.OBJECT_SIZE);
-        for (Wall wall : walls) {
-            Rectangle wallRect = new Rectangle((int) wall.getPositionX(), (int) wall.getPositionY(),
-                    (int) Settings.OBJECT_SIZE, (int) Settings.OBJECT_SIZE);
-
-            System.out.println(mainHeroRect.intersection(wallRect));
-            if (mainHeroRect.intersects(wallRect)) {
-                return false;
-            }
-        }
-        for (Box box : boxes) {
-            Rectangle wallRect = new Rectangle((int) box.getPositionX(), (int) box.getPositionY(),
-                    (int) Settings.OBJECT_SIZE, (int) Settings.OBJECT_SIZE);
-
-            System.out.println(mainHeroRect.intersection(wallRect));
-            if (mainHeroRect.intersects(wallRect)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
 }
 
 

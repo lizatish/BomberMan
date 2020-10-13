@@ -15,76 +15,16 @@ import java.util.List;
 public enum MovableEventType {
     UP(Arrays.asList(KeyEvent.getKeyText(KeyEvent.VK_UP).toUpperCase(),
             KeyEvent.getKeyText(KeyEvent.VK_W).toUpperCase())) {
-        @Override
-        public void startMoving(Movable entity) {
-            entity.moveUp();
-        }
-
-        @Override
-        public boolean canMove(List<Wall> walls, List<Box> boxes, MainHero mainHero) {
-            if (mainHero.getPositionY() == 0) {
-                return false;
-            }
-
-            return true;
-        }
     },
     LEFT(Arrays.asList(KeyEvent.getKeyText(KeyEvent.VK_LEFT).toUpperCase(),
             KeyEvent.getKeyText(KeyEvent.VK_A).toUpperCase())) {
-        @Override
-        public void startMoving(Movable entity) {
-            entity.moveLeft();
-        }
-
-        @Override
-        public boolean canMove(List<Wall> walls, List<Box> boxes, MainHero mainHero) {
-            if (mainHero.getPositionX() - 1 < 0) {
-                return false;
-            }
-
-
-            return true;
-        }
-
-
     },
     DOWN(Arrays.asList(KeyEvent.getKeyText(KeyEvent.VK_DOWN).toUpperCase(),
             KeyEvent.getKeyText(KeyEvent.VK_S).toUpperCase())) {
-        @Override
-        public void startMoving(Movable entity) {
-            entity.moveDown();
-        }
-
-        @Override
-        public boolean canMove(List<Wall> walls, List<Box> boxes, MainHero mainHero) {
-            if (mainHero.getPositionY() + Settings.OBJECT_SIZE + 1 > Settings.FIELD_HEIGHT) {
-                return false;
-            }
-            return true;
-
-
-        }
-
-
     },
     RIGHT(Arrays.asList(KeyEvent.getKeyText(KeyEvent.VK_RIGHT).toUpperCase(),
             KeyEvent.getKeyText(KeyEvent.VK_D).toUpperCase())) {
-        @Override
-        public void startMoving(Movable entity) {
-            entity.moveRight();
-        }
-
-        @Override
-        public boolean canMove(List<Wall> walls, List<Box> boxes, MainHero mainHero) {
-            if (mainHero.getPositionX() + Settings.OBJECT_SIZE + 1 > Settings.FIELD_WIDTH) {
-                return false;
-            }
-
-
-            return true;
-        }
     };
-
 
     private final List<String> keyNames;
 
@@ -110,9 +50,5 @@ public enum MovableEventType {
     public List<String> getKeyName() {
         return keyNames;
     }
-
-    public abstract void startMoving(Movable entity);
-
-    public abstract boolean canMove(List<Wall> walls, List<Box> boxes, MainHero mainHero);
 
 }

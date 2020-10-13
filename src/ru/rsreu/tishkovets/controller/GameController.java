@@ -1,5 +1,6 @@
 package ru.rsreu.tishkovets.controller;
 
+import ru.rsreu.tishkovets.Settings;
 import ru.rsreu.tishkovets.controller.move.MovableEventType;
 import ru.rsreu.tishkovets.model.GameModel;
 
@@ -11,9 +12,17 @@ public class GameController {
     }
 
     public void move(MovableEventType eventType) {
-        boolean canMove = eventType.canMove(model.getWalls(), model.getBoxes(), model.getMainHero());
+        boolean canMove = model.canMove(eventType);
         if (canMove) {
-            eventType.startMoving(model.getMainHero());
+            if (eventType == MovableEventType.UP) {
+                model.getMainHero().moveUp();
+            } else if (eventType == MovableEventType.DOWN) {
+                model.getMainHero().moveDown();
+            } else if (eventType == MovableEventType.LEFT) {
+                model.getMainHero().moveLeft();
+            } else if (eventType == MovableEventType.RIGHT) {
+                model.getMainHero().moveRight();
+            }
         }
         model.getMainHero().stop();
     }

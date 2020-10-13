@@ -6,10 +6,12 @@ public class Wall {
 
     private final double positionX;
     private final double positionY;
+    private final double size;
 
-    public Wall(double x, double y) {
+    public Wall(double x, double y, double size) {
         positionX = x;
         positionY = y;
+        this.size = size;
     }
 
     @Override
@@ -26,9 +28,14 @@ public class Wall {
         return Objects.hash(positionX, positionY);
     }
 
+    public double getSize() {
+        return size;
+    }
+
     public double getPositionX() {
         return positionX;
     }
+
     public double getPositionY() {
         return positionY;
     }

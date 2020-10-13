@@ -7,10 +7,8 @@ import ru.rsreu.tishkovets.controller.move.Movable;
 public abstract class Person implements Movable {
     private double positionX;
     private double positionY;
-    private double velocityX;
-    private double velocityY;
     private final double size;
-    private double speed = 50;
+    private double speed = 1;
     private GameModel model;
 
     Person(double x, double y, double size, GameModel model) {
@@ -18,13 +16,6 @@ public abstract class Person implements Movable {
         this.size = size;
         positionX = x;
         positionY = y;
-        velocityX = 0;
-        velocityY = 0;
-    }
-
-    public void update(double time) {
-        positionX += velocityX * time;
-        positionY += velocityY * time;
     }
 
     @Override
@@ -53,27 +44,23 @@ public abstract class Person implements Movable {
     }
 
     private void setVelocity(double x, double y) {
-        velocityX = x;
-        velocityY = y;
-        positionX += velocityX * 0.01;
-        positionY += velocityY * 0.01;
+        positionX += x;
+        positionY += y;
         model.update();
-    }
-
-    public String toString() {
-        return " Position: [" + positionX + "," + positionY + "]"
-                + " Velocity: [" + velocityX + "," + velocityY + "]";
     }
 
     public double getSize() {
         return size;
     }
-
     public double getPositionX() {
         return positionX;
     }
 
     public double getPositionY() {
         return positionY;
+    }
+
+    public double getSpeed() {
+        return speed;
     }
 }
