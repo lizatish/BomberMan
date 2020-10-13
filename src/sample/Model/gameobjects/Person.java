@@ -53,6 +53,8 @@ public abstract class Person implements Movable {
     private void setVelocity(double x, double y) {
         velocityX = x;
         velocityY = y;
+        positionX += velocityX * 0.01;
+        positionY += velocityY * 0.01;
         model.update();
     }
 

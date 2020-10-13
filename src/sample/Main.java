@@ -1,5 +1,6 @@
 package sample;
 
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -8,6 +9,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import sample.Controller.GameController;
+import sample.Controller.move.MovableEventType;
 import sample.Model.Bombers;
 import sample.View.MainHeroView;
 import sample.View.WallView;
@@ -19,6 +21,7 @@ import java.util.List;
 public class Main extends Application {
     private GraphicsContext gc;
     List<String> keyboardInput;
+
 
     @Override
     public void start(Stage primaryStage) {
@@ -33,7 +36,14 @@ public class Main extends Application {
         eventManager.subscribe(mainHeroView);
         eventManager.subscribe(temp);
 
-        controller.checkUserChanges(keyboardInput);
+        new AnimationTimer() {
+            public void handle(long currentNanoTime) {
+                MovableEventType eventType = MovableEventType.getMovableOperationByKeyName(keyboardInput);
+                if (eventType != null) {
+                    controller.move(eventType);
+                }
+            }
+        }.start();
     }
 
     private void initializeGameSceneAndKeyboard(Stage primaryStage) {
