@@ -4,12 +4,10 @@ import ru.rsreu.tishkovets.Settings;
 import ru.rsreu.tishkovets.events.MovableEventType;
 import ru.rsreu.tishkovets.events.EventType;
 import ru.rsreu.tishkovets.events.data.InitEventData;
-import ru.rsreu.tishkovets.events.data.object.BombData;
-import ru.rsreu.tishkovets.events.data.object.BoxData;
+import ru.rsreu.tishkovets.events.data.object.ObjectData;
 import ru.rsreu.tishkovets.events.data.ModelUpdateEventData;
 import ru.rsreu.tishkovets.events.EventManager;
 import ru.rsreu.tishkovets.events.data.object.MainHeroData;
-import ru.rsreu.tishkovets.events.data.object.WallData;
 import ru.rsreu.tishkovets.model.gameobjects.Bomb;
 import ru.rsreu.tishkovets.model.gameobjects.Box;
 import ru.rsreu.tishkovets.model.gameobjects.MainHero;
@@ -82,12 +80,15 @@ public class GameModel implements GameAction {
 
     @Override
     public boolean isPaused() {
-        return false;
+        return GameState.PAUSED.equals(gameState);
     }
 
     @Override
     public void start() {
-
+        if (GameState.NEW == gameState) {
+            gameState = GameState.RUNNING;
+            update(EventType.INIT_UPDATE);
+        }
     }
 
     private double getHorizontalStep() {
@@ -129,10 +130,10 @@ public class GameModel implements GameAction {
         }
     }
 
-    private List<BombData> createBombsData() {
-        List<BombData> bombData = new ArrayList<>();
+    private List<ObjectData> createBombsData() {
+        List<ObjectData> bombData = new ArrayList<>();
         for (Bomb bomb : bombs) {
-            BombData temp = new BombData(bomb.getPositionX(), bomb.getPositionY(), bomb.getSize());
+            ObjectData temp = new ObjectData(bomb.getPositionX(), bomb.getPositionY(), bomb.getSize());
             bombData.add(temp);
         }
         return bombData;
@@ -144,14 +145,14 @@ public class GameModel implements GameAction {
     }
 
     private InitEventData createInitData() {
-        List<WallData> wallsData = new ArrayList<>();
+        List<ObjectData> wallsData = new ArrayList<>();
         for (Wall wall : walls) {
-            WallData temp = new WallData(wall.getPositionX(), wall.getPositionY());
+            ObjectData temp = new ObjectData(wall.getPositionX(), wall.getPositionY(), wall.getSize());
             wallsData.add(temp);
         }
-        List<BoxData> boxesData = new ArrayList<>();
+        List<ObjectData> boxesData = new ArrayList<>();
         for (Box box : boxes) {
-            BoxData temp = new BoxData(box.getPositionX(), box.getPositionY());
+            ObjectData temp = new ObjectData(box.getPositionX(), box.getPositionY(), box.getSize());
             boxesData.add(temp);
         }
         MainHeroData mainHeroData = new MainHeroData(mainHero.getPositionX(), mainHero.getPositionY(),
@@ -190,7 +191,8 @@ public class GameModel implements GameAction {
         }
         return true;
     }
-    private boolean  checkBombsCollision(Rectangle mainHeroRect) {
+
+    private boolean checkBombsCollision(Rectangle mainHeroRect) {
         for (Bomb bomb : bombs) {
             int boxPositionX = (int) bomb.getPositionX();
             int boxPositionY = (int) bomb.getPositionY();
@@ -203,6 +205,7 @@ public class GameModel implements GameAction {
         }
         return true;
     }
+
     private boolean checkBoxesCollision(Rectangle mainHeroRect) {
         for (Box box : boxes) {
             int boxPositionX = (int) box.getPositionX();

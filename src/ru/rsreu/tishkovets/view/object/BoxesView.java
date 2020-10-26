@@ -1,14 +1,12 @@
 package ru.rsreu.tishkovets.view.object;
 
-import javafx.event.Event;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import ru.rsreu.tishkovets.Settings;
 import ru.rsreu.tishkovets.events.EventListener;
 import ru.rsreu.tishkovets.events.data.EventData;
 import ru.rsreu.tishkovets.events.data.InitEventData;
-import ru.rsreu.tishkovets.events.data.object.BoxData;
-import ru.rsreu.tishkovets.events.data.ModelUpdateEventData;
+import ru.rsreu.tishkovets.events.data.object.ObjectData;
 
 import java.util.List;
 
@@ -27,8 +25,8 @@ public class BoxesView implements EventListener {
 
     public void render(EventData data) {
         InitEventData renderData = (InitEventData)data;
-        List<BoxData> boxes = renderData.getBoxesData();
-        for (BoxData box : boxes) {
+        List<ObjectData> boxes = renderData.getBoxesData();
+        for (ObjectData box : boxes) {
             gc.drawImage(image, box.getPositionX(), box.getPositionY());
         }
     }

@@ -13,6 +13,7 @@ import ru.rsreu.tishkovets.events.GameEventType;
 import ru.rsreu.tishkovets.events.MovableEventType;
 import ru.rsreu.tishkovets.events.EventManager;
 import ru.rsreu.tishkovets.events.EventType;
+import ru.rsreu.tishkovets.view.notification.NewGameNotification;
 import ru.rsreu.tishkovets.view.object.BombsView;
 import ru.rsreu.tishkovets.view.object.BoxesView;
 import ru.rsreu.tishkovets.view.object.MainHeroView;
@@ -26,6 +27,7 @@ public class GameView {
     private GraphicsContext gc;
     private final GameController controller;
     private final EventManager eventManager;
+    private boolean isPaintGame = false;
 
     public GameView(GameController controller, EventManager eventManager) {
         this.controller = controller;
@@ -47,24 +49,35 @@ public class GameView {
         eventManager.subscribe(EventType.INIT_UPDATE, wallsView);
         eventManager.subscribe(EventType.INIT_UPDATE, boxesView);
 
-        controller.initModel();
-
         new AnimationTimer() {
             public void handle(long currentNanoTime) {
-                MovableEventType eventType = MovableEventType.getMovableOperationByKeyName(keyboardInput);
-                if (eventType != null) {
-                    controller.move(eventType);
-                }
                 GameEventType gameEventType = GameEventType.getGameEventTypeByKeyName(keyboardInput);
                 if (gameEventType != null) {
+                    if (gameEventType == GameEventType.START) {
+                        isPaintGame = true;
+                        gc.clearRect(0, 0, Settings.FIELD_WIDTH, Settings.FIELD_HEIGHT);
+                    } else if (gameEventType == GameEventType.PAUSE
+                    ) {
+                        isPaintGame = false;
+                    }
                     controller.startAction(gameEventType);
+                }
+
+                if (!isPaintGame) {
+                    NewGameNotification notification = new NewGameNotification();
+                    notification.render(gc);
+                } else {
+                    MovableEventType eventType = MovableEventType.getMovableOperationByKeyName(keyboardInput);
+                    if (eventType != null) {
+                        controller.move(eventType);
+                    }
                 }
             }
         }.start();
     }
 
     private void initializeGameSceneAndKeyboard(Stage primaryStage) {
-        primaryStage.setTitle("BomberMan");
+        primaryStage.setTitle("Bombers");
         Group root = new Group();
         Scene theScene = new Scene(root, Settings.FIELD_WIDTH, Settings.FIELD_HEIGHT, Color.LIMEGREEN);
         primaryStage.setScene(theScene);

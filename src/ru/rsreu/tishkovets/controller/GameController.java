@@ -31,8 +31,4 @@ public class GameController {
     public void startAction(GameEventType gameEventType) {
         gameEventType.startAction(model);
     }
-
-    public void initModel() {
-        model.update(EventType.INIT_UPDATE);
-    }
 }

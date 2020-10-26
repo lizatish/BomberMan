@@ -1,14 +1,12 @@
 package ru.rsreu.tishkovets.view.object;
 
-import javafx.event.Event;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import ru.rsreu.tishkovets.Settings;
 import ru.rsreu.tishkovets.events.data.EventData;
 import ru.rsreu.tishkovets.events.data.InitEventData;
-import ru.rsreu.tishkovets.events.data.ModelUpdateEventData;
 import ru.rsreu.tishkovets.events.EventListener;
-import ru.rsreu.tishkovets.events.data.object.WallData;
+import ru.rsreu.tishkovets.events.data.object.ObjectData;
 
 import java.util.List;
 
@@ -27,8 +25,8 @@ public class WallsView implements EventListener {
 
     public void render(EventData data) {
         InitEventData renderData = (InitEventData)data;
-        List<WallData> walls = renderData.getWallsData();
-        for (WallData wall : walls) {
+        List<ObjectData> walls = renderData.getWallsData();
+        for (ObjectData wall : walls) {
             gc.drawImage(image, wall.getPositionX(), wall.getPositionY());
         }
     }
