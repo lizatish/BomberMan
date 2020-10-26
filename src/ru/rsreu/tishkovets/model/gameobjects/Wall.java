@@ -20,12 +20,13 @@ public class Wall {
         if (o == null || getClass() != o.getClass()) return false;
         Wall wall = (Wall) o;
         return Double.compare(wall.positionX, positionX) == 0 &&
-                Double.compare(wall.positionY, positionY) == 0;
+                Double.compare(wall.positionY, positionY) == 0 &&
+                Double.compare(wall.size, size) == 0;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(positionX, positionY);
+        return Objects.hash(positionX, positionY, size);
     }
 
     public double getSize() {

@@ -1,13 +1,15 @@
 package ru.rsreu.tishkovets.model;
 
-import javafx.util.Pair;
 import ru.rsreu.tishkovets.Settings;
 import ru.rsreu.tishkovets.controller.move.MovableEventType;
-import ru.rsreu.tishkovets.events.data.BoxData;
+import ru.rsreu.tishkovets.events.EventType;
 import ru.rsreu.tishkovets.events.data.EventData;
+import ru.rsreu.tishkovets.events.data.InitEventData;
+import ru.rsreu.tishkovets.events.data.object.BoxData;
+import ru.rsreu.tishkovets.events.data.ModelUpdateEventData;
 import ru.rsreu.tishkovets.events.EventManager;
-import ru.rsreu.tishkovets.events.data.MainHeroData;
-import ru.rsreu.tishkovets.events.data.WallData;
+import ru.rsreu.tishkovets.events.data.object.MainHeroData;
+import ru.rsreu.tishkovets.events.data.object.WallData;
 import ru.rsreu.tishkovets.model.gameobjects.Box;
 import ru.rsreu.tishkovets.model.gameobjects.MainHero;
 import ru.rsreu.tishkovets.model.gameobjects.Wall;
@@ -15,7 +17,6 @@ import ru.rsreu.tishkovets.model.gameobjects.Wall;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class GameModel {
     private final EventManager eventManager;
@@ -32,10 +33,10 @@ public class GameModel {
 
     public void generateWallsAndBoxes() {
         double horizontalStep = Settings.FIELD_WIDTH / (2 * Settings.WALLS_NUMBER_IN_ROW + 1);
-
         if (horizontalStep < Settings.OBJECT_SIZE) {
             horizontalStep = Settings.OBJECT_SIZE;
         }
+
         for (double i = horizontalStep; i < Settings.FIELD_WIDTH; i += 2 * horizontalStep) {
             for (double j = Settings.OBJECT_SIZE; j < Settings.FIELD_HEIGHT; j += 2 * Settings.OBJECT_SIZE) {
                 Wall temp = new Wall(i, j, Settings.OBJECT_SIZE);
@@ -47,7 +48,7 @@ public class GameModel {
         while (currentBoxesNumber < Settings.BOXES_NUMBER) {
             int x = getRandomNumber(0, Settings.FIELD_WIDTH - 1);
             int y = getRandomNumber(0, Settings.FIELD_HEIGHT - 1);
-            x -= x % Settings.OBJECT_SIZE;
+            x -= x % horizontalStep;
             y -= y % Settings.OBJECT_SIZE;
             if (x < 2 * Settings.OBJECT_SIZE && 2 * y < Settings.OBJECT_SIZE ||
                     x > Settings.FIELD_WIDTH - 2 * Settings.OBJECT_SIZE
@@ -64,9 +65,9 @@ public class GameModel {
 
     public boolean canMove(MovableEventType eventType) {
 
-        int mainHeroPositionX = (int) mainHero.getPositionX();
-        int mainHeroPositionY = (int) mainHero.getPositionY();
-        int mainHeroSize = (int) mainHero.getSize();
+        double mainHeroPositionX = mainHero.getPositionX();
+        double mainHeroPositionY = mainHero.getPositionY();
+        double mainHeroSize = mainHero.getSize();
         double mainHeroSpeed = mainHero.getSpeed();
 
         if (eventType == MovableEventType.UP) {
@@ -91,7 +92,8 @@ public class GameModel {
             }
         }
 
-        Rectangle mainHeroRect = new Rectangle(mainHeroPositionX, mainHeroPositionY, mainHeroSize, mainHeroSize);
+        Rectangle mainHeroRect = new Rectangle((int) mainHeroPositionX, (int) mainHeroPositionY,
+                (int) mainHeroSize, (int) mainHeroSize);
         for (Wall wall : walls) {
             int wallPositionX = (int) wall.getPositionX();
             int wallPositionY = (int) wall.getPositionY();
@@ -115,20 +117,30 @@ public class GameModel {
         return true;
     }
 
-    public void update() {
-        MainHeroData mainHeroData = new MainHeroData(mainHero.getPositionX(), mainHero.getPositionY(), mainHero.getSize());
-        List<WallData> wallsData = new ArrayList<>();
-        for (Wall wall : walls) {
-            WallData temp = new WallData(wall.getPositionX(), wall.getPositionY());
-            wallsData.add(temp);
+    public void update(EventType eventType) {
+        if (eventType == EventType.INIT_UPDATE) {
+            List<WallData> wallsData = new ArrayList<>();
+            for (Wall wall : walls) {
+                WallData temp = new WallData(wall.getPositionX(), wall.getPositionY());
+                wallsData.add(temp);
+            }
+            List<BoxData> boxesData = new ArrayList<>();
+            for (Box box : boxes) {
+                BoxData temp = new BoxData(box.getPositionX(), box.getPositionY());
+                boxesData.add(temp);
+            }
+            MainHeroData mainHeroData = new MainHeroData(mainHero.getPositionX(), mainHero.getPositionY(),
+                    mainHero.getPrevPositionX(), mainHero.getPrevPositionY(), mainHero.getSize());
+
+            InitEventData data = new InitEventData(mainHeroData, wallsData, boxesData);
+            eventManager.notify(eventType, data);
+        } else if (eventType == EventType.MODEL_UPDATE) {
+            MainHeroData mainHeroData = new MainHeroData(mainHero.getPositionX(), mainHero.getPositionY(),
+                    mainHero.getPrevPositionX(), mainHero.getPrevPositionY(), mainHero.getSize());
+
+            ModelUpdateEventData data = new ModelUpdateEventData(mainHeroData);
+            eventManager.notify(eventType, data);
         }
-        List<BoxData> boxesData = new ArrayList<>();
-        for (Box box : boxes) {
-            BoxData temp = new BoxData(box.getPositionX(), box.getPositionY());
-            boxesData.add(temp);
-        }
-        EventData data = new EventData(mainHeroData, wallsData, boxesData);
-        eventManager.notifyAllListeners(data);
     }
 
     public int getRandomNumber(double min, double max) {

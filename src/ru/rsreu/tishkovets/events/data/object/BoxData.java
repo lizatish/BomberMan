@@ -1,11 +1,10 @@
-package ru.rsreu.tishkovets.events.data;
+package ru.rsreu.tishkovets.events.data.object;
 
-
-public class WallData {
+public class BoxData {
     private final double positionX;
     private final double positionY;
 
-    public WallData(double x, double y) {
+    public BoxData(double x, double y) {
         positionX = x;
         positionY = y;
     }

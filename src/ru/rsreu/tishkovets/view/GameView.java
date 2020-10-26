@@ -11,6 +11,7 @@ import ru.rsreu.tishkovets.Settings;
 import ru.rsreu.tishkovets.controller.GameController;
 import ru.rsreu.tishkovets.controller.move.MovableEventType;
 import ru.rsreu.tishkovets.events.EventManager;
+import ru.rsreu.tishkovets.events.EventType;
 import ru.rsreu.tishkovets.view.object.BoxesView;
 import ru.rsreu.tishkovets.view.object.MainHeroView;
 import ru.rsreu.tishkovets.view.object.WallsView;
@@ -36,9 +37,12 @@ public class GameView {
         WallsView wallsView = new WallsView(gc);
         BoxesView boxesView = new BoxesView(gc);
 
-        eventManager.subscribe(mainHeroView);
-        eventManager.subscribe(wallsView);
-        eventManager.subscribe(boxesView);
+        eventManager.subscribe(EventType.MODEL_UPDATE, mainHeroView);
+        eventManager.subscribe(EventType.INIT_UPDATE, mainHeroView);
+        eventManager.subscribe(EventType.INIT_UPDATE, wallsView);
+        eventManager.subscribe(EventType.INIT_UPDATE, boxesView);
+
+        controller.initModel();
 
         new AnimationTimer() {
             public void handle(long currentNanoTime) {

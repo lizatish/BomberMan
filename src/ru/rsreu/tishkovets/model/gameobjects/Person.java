@@ -1,15 +1,18 @@
 package ru.rsreu.tishkovets.model.gameobjects;
 
 
+import ru.rsreu.tishkovets.events.EventType;
 import ru.rsreu.tishkovets.model.GameModel;
 import ru.rsreu.tishkovets.controller.move.Movable;
 
 public abstract class Person implements Movable {
     private double positionX;
     private double positionY;
+    private double prevPositionX;
+    private double prevPositionY;
     private final double size;
     private double speed = 1;
-    private GameModel model;
+    private final GameModel model;
 
     Person(double x, double y, double size, GameModel model) {
         this.model = model;
@@ -44,14 +47,17 @@ public abstract class Person implements Movable {
     }
 
     private void setVelocity(double x, double y) {
+        prevPositionX = positionX;
+        prevPositionY = positionY;
         positionX += x;
         positionY += y;
-        model.update();
+        model.update(EventType.MODEL_UPDATE);
     }
 
     public double getSize() {
         return size;
     }
+
     public double getPositionX() {
         return positionX;
     }
@@ -62,5 +68,17 @@ public abstract class Person implements Movable {
 
     public double getSpeed() {
         return speed;
+    }
+
+    public double getPrevPositionX() {
+        return prevPositionX;
+    }
+
+    public void setSpeed(double speed) {
+        this.speed = speed;
+    }
+
+    public double getPrevPositionY() {
+        return prevPositionY;
     }
 }

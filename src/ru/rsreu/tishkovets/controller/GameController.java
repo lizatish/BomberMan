@@ -1,7 +1,7 @@
 package ru.rsreu.tishkovets.controller;
 
-import ru.rsreu.tishkovets.Settings;
 import ru.rsreu.tishkovets.controller.move.MovableEventType;
+import ru.rsreu.tishkovets.events.EventType;
 import ru.rsreu.tishkovets.model.GameModel;
 
 public class GameController {
@@ -25,5 +25,8 @@ public class GameController {
             }
         }
         model.getMainHero().stop();
+    }
+    public void initModel() {
+        model.update(EventType.INIT_UPDATE);
     }
 }

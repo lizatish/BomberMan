@@ -1,14 +1,13 @@
-package ru.rsreu.tishkovets.events.data;
+package ru.rsreu.tishkovets.events.data.object;
 
-public class MainHeroData {
+
+public class WallData {
     private final double positionX;
     private final double positionY;
-    private final double size;
 
-    public MainHeroData(double x, double y, double size) {
+    public WallData(double x, double y) {
         positionX = x;
         positionY = y;
-        this.size = size;
     }
 
     public double getPositionX() {
@@ -18,9 +17,4 @@ public class MainHeroData {
     public double getPositionY() {
         return positionY;
     }
-
-    public double getSize() {
-        return size;
-    }
-
 }
