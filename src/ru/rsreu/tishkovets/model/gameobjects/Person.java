@@ -3,7 +3,7 @@ package ru.rsreu.tishkovets.model.gameobjects;
 
 import ru.rsreu.tishkovets.events.EventType;
 import ru.rsreu.tishkovets.model.GameModel;
-import ru.rsreu.tishkovets.controller.move.Movable;
+import ru.rsreu.tishkovets.model.move.Movable;
 
 public abstract class Person implements Movable {
     private double positionX;

@@ -1,4 +1,4 @@
-package ru.rsreu.tishkovets.controller.move;
+package ru.rsreu.tishkovets.model.move;
 
 public interface Movable {
     void moveUp();

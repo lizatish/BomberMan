@@ -1,14 +1,7 @@
-package ru.rsreu.tishkovets.controller.move;
+package ru.rsreu.tishkovets.events;
 
 
-import ru.rsreu.tishkovets.Settings;
-import ru.rsreu.tishkovets.model.gameobjects.Box;
-import ru.rsreu.tishkovets.model.gameobjects.MainHero;
-import ru.rsreu.tishkovets.model.gameobjects.Wall;
-
-import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

@@ -1,9 +1,8 @@
 package ru.rsreu.tishkovets.model;
 
 import ru.rsreu.tishkovets.Settings;
-import ru.rsreu.tishkovets.controller.move.MovableEventType;
+import ru.rsreu.tishkovets.events.MovableEventType;
 import ru.rsreu.tishkovets.events.EventType;
-import ru.rsreu.tishkovets.events.data.EventData;
 import ru.rsreu.tishkovets.events.data.InitEventData;
 import ru.rsreu.tishkovets.events.data.object.BoxData;
 import ru.rsreu.tishkovets.events.data.ModelUpdateEventData;
@@ -18,7 +17,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameModel {
+public class GameModel implements GameAction {
     private final EventManager eventManager;
 
     private final MainHero mainHero = new MainHero(0, 0, Settings.OBJECT_SIZE - 4, this);
@@ -28,22 +27,72 @@ public class GameModel {
     public GameModel(EventManager eventManager) {
         this.eventManager = eventManager;
         generateWallsAndBoxes();
-
     }
 
     public void generateWallsAndBoxes() {
+        createWalls();
+        createBoxes();
+    }
+
+    public boolean canMove(MovableEventType eventType) {
+        Rectangle mainHeroRect = new Rectangle((int) mainHero.getPositionX(), (int) mainHero.getPositionY(),
+                (int) mainHero.getSize(), (int) mainHero.getSize());
+
+
+        return checkOutsideWallsCollision(mainHeroRect, mainHero.getSpeed(), eventType) &&
+                checkBoxesCollision(mainHeroRect) && checkInsideWallsCollision(mainHeroRect);
+    }
+
+
+    public void update(EventType eventType) {
+        if (eventType == EventType.INIT_UPDATE) {
+            eventManager.notify(eventType, createInitData());
+
+        } else if (eventType == EventType.MODEL_UPDATE) {
+            eventManager.notify(eventType, new ModelUpdateEventData(createMainHeroData()));
+        }
+    }
+
+    @Override
+    public void placeBomb() {
+
+    }
+
+    @Override
+    public void pause(boolean isPaused) {
+
+    }
+
+    @Override
+    public boolean isPaused() {
+        return false;
+    }
+
+    @Override
+    public void start() {
+
+    }
+
+    private double getHorizontalStep() {
         double horizontalStep = Settings.FIELD_WIDTH / (2 * Settings.WALLS_NUMBER_IN_ROW + 1);
         if (horizontalStep < Settings.OBJECT_SIZE) {
             horizontalStep = Settings.OBJECT_SIZE;
         }
+        return horizontalStep;
+    }
 
+    private void createWalls() {
+        double horizontalStep = getHorizontalStep();
         for (double i = horizontalStep; i < Settings.FIELD_WIDTH; i += 2 * horizontalStep) {
             for (double j = Settings.OBJECT_SIZE; j < Settings.FIELD_HEIGHT; j += 2 * Settings.OBJECT_SIZE) {
                 Wall temp = new Wall(i, j, Settings.OBJECT_SIZE);
                 walls.add(temp);
             }
         }
+    }
 
+    private void createBoxes() {
+        double horizontalStep = getHorizontalStep();
         int currentBoxesNumber = 0;
         while (currentBoxesNumber < Settings.BOXES_NUMBER) {
             int x = getRandomNumber(0, Settings.FIELD_WIDTH - 1);
@@ -63,37 +112,46 @@ public class GameModel {
         }
     }
 
-    public boolean canMove(MovableEventType eventType) {
+    private MainHeroData createMainHeroData() {
+        return new MainHeroData(mainHero.getPositionX(), mainHero.getPositionY(),
+                mainHero.getPrevPositionX(), mainHero.getPrevPositionY(), mainHero.getSize());
+    }
 
-        double mainHeroPositionX = mainHero.getPositionX();
-        double mainHeroPositionY = mainHero.getPositionY();
-        double mainHeroSize = mainHero.getSize();
-        double mainHeroSpeed = mainHero.getSpeed();
-
-        if (eventType == MovableEventType.UP) {
-            mainHeroPositionY -= mainHeroSpeed;
-            if (mainHeroPositionY < 0) {
-                return false;
-            }
-        } else if (eventType == MovableEventType.DOWN) {
-            mainHeroPositionY += mainHeroSpeed;
-            if (mainHeroPositionY + mainHeroSize > Settings.FIELD_HEIGHT) {
-                return false;
-            }
-        } else if (eventType == MovableEventType.LEFT) {
-            mainHeroPositionX -= mainHeroSpeed;
-            if (mainHeroPositionX < 0) {
-                return false;
-            }
-        } else if (eventType == MovableEventType.RIGHT) {
-            mainHeroPositionX += mainHeroSpeed;
-            if (mainHeroPositionX + mainHeroSize > Settings.FIELD_WIDTH) {
-                return false;
-            }
+    private InitEventData createInitData() {
+        List<WallData> wallsData = new ArrayList<>();
+        for (Wall wall : walls) {
+            WallData temp = new WallData(wall.getPositionX(), wall.getPositionY());
+            wallsData.add(temp);
         }
+        List<BoxData> boxesData = new ArrayList<>();
+        for (Box box : boxes) {
+            BoxData temp = new BoxData(box.getPositionX(), box.getPositionY());
+            boxesData.add(temp);
+        }
+        MainHeroData mainHeroData = new MainHeroData(mainHero.getPositionX(), mainHero.getPositionY(),
+                mainHero.getPrevPositionX(), mainHero.getPrevPositionY(), mainHero.getSize());
 
-        Rectangle mainHeroRect = new Rectangle((int) mainHeroPositionX, (int) mainHeroPositionY,
-                (int) mainHeroSize, (int) mainHeroSize);
+        return new InitEventData(mainHeroData, wallsData, boxesData);
+    }
+
+    private boolean checkOutsideWallsCollision(Rectangle mainHeroRect, double mainHeroSpeed, MovableEventType eventType) {
+        if (eventType == MovableEventType.UP) {
+            mainHeroRect.y -= mainHeroSpeed;
+            return mainHeroRect.y >= 0;
+        } else if (eventType == MovableEventType.DOWN) {
+            mainHeroRect.y += mainHeroSpeed;
+            return !(mainHeroRect.y + mainHeroRect.height > Settings.FIELD_HEIGHT);
+        } else if (eventType == MovableEventType.LEFT) {
+            mainHeroRect.x -= mainHeroSpeed;
+            return mainHeroRect.x >= 0;
+        } else if (eventType == MovableEventType.RIGHT) {
+            mainHeroRect.x += mainHeroSpeed;
+            return !(mainHeroRect.x + mainHeroRect.height > Settings.FIELD_WIDTH);
+        }
+        return true;
+    }
+
+    private boolean checkInsideWallsCollision(Rectangle mainHeroRect) {
         for (Wall wall : walls) {
             int wallPositionX = (int) wall.getPositionX();
             int wallPositionY = (int) wall.getPositionY();
@@ -104,6 +162,10 @@ public class GameModel {
                 return false;
             }
         }
+        return true;
+    }
+
+    private boolean checkBoxesCollision(Rectangle mainHeroRect) {
         for (Box box : boxes) {
             int boxPositionX = (int) box.getPositionX();
             int boxPositionY = (int) box.getPositionY();
@@ -115,32 +177,6 @@ public class GameModel {
             }
         }
         return true;
-    }
-
-    public void update(EventType eventType) {
-        if (eventType == EventType.INIT_UPDATE) {
-            List<WallData> wallsData = new ArrayList<>();
-            for (Wall wall : walls) {
-                WallData temp = new WallData(wall.getPositionX(), wall.getPositionY());
-                wallsData.add(temp);
-            }
-            List<BoxData> boxesData = new ArrayList<>();
-            for (Box box : boxes) {
-                BoxData temp = new BoxData(box.getPositionX(), box.getPositionY());
-                boxesData.add(temp);
-            }
-            MainHeroData mainHeroData = new MainHeroData(mainHero.getPositionX(), mainHero.getPositionY(),
-                    mainHero.getPrevPositionX(), mainHero.getPrevPositionY(), mainHero.getSize());
-
-            InitEventData data = new InitEventData(mainHeroData, wallsData, boxesData);
-            eventManager.notify(eventType, data);
-        } else if (eventType == EventType.MODEL_UPDATE) {
-            MainHeroData mainHeroData = new MainHeroData(mainHero.getPositionX(), mainHero.getPositionY(),
-                    mainHero.getPrevPositionX(), mainHero.getPrevPositionY(), mainHero.getSize());
-
-            ModelUpdateEventData data = new ModelUpdateEventData(mainHeroData);
-            eventManager.notify(eventType, data);
-        }
     }
 
     public int getRandomNumber(double min, double max) {
