@@ -9,9 +9,11 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import ru.rsreu.tishkovets.Settings;
 import ru.rsreu.tishkovets.controller.GameController;
+import ru.rsreu.tishkovets.events.GameEventType;
 import ru.rsreu.tishkovets.events.MovableEventType;
 import ru.rsreu.tishkovets.events.EventManager;
 import ru.rsreu.tishkovets.events.EventType;
+import ru.rsreu.tishkovets.view.object.BombsView;
 import ru.rsreu.tishkovets.view.object.BoxesView;
 import ru.rsreu.tishkovets.view.object.MainHeroView;
 import ru.rsreu.tishkovets.view.object.WallsView;
@@ -36,8 +38,11 @@ public class GameView {
         MainHeroView mainHeroView = new MainHeroView(gc);
         WallsView wallsView = new WallsView(gc);
         BoxesView boxesView = new BoxesView(gc);
+        BombsView bombsView = new BombsView(gc);
 
         eventManager.subscribe(EventType.MODEL_UPDATE, mainHeroView);
+        eventManager.subscribe(EventType.MODEL_UPDATE, bombsView);
+
         eventManager.subscribe(EventType.INIT_UPDATE, mainHeroView);
         eventManager.subscribe(EventType.INIT_UPDATE, wallsView);
         eventManager.subscribe(EventType.INIT_UPDATE, boxesView);
@@ -49,6 +54,10 @@ public class GameView {
                 MovableEventType eventType = MovableEventType.getMovableOperationByKeyName(keyboardInput);
                 if (eventType != null) {
                     controller.move(eventType);
+                }
+                GameEventType gameEventType = GameEventType.getGameEventTypeByKeyName(keyboardInput);
+                if (gameEventType != null) {
+                    controller.startAction(gameEventType);
                 }
             }
         }.start();

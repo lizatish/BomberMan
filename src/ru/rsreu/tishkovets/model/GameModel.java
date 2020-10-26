@@ -4,11 +4,13 @@ import ru.rsreu.tishkovets.Settings;
 import ru.rsreu.tishkovets.events.MovableEventType;
 import ru.rsreu.tishkovets.events.EventType;
 import ru.rsreu.tishkovets.events.data.InitEventData;
+import ru.rsreu.tishkovets.events.data.object.BombData;
 import ru.rsreu.tishkovets.events.data.object.BoxData;
 import ru.rsreu.tishkovets.events.data.ModelUpdateEventData;
 import ru.rsreu.tishkovets.events.EventManager;
 import ru.rsreu.tishkovets.events.data.object.MainHeroData;
 import ru.rsreu.tishkovets.events.data.object.WallData;
+import ru.rsreu.tishkovets.model.gameobjects.Bomb;
 import ru.rsreu.tishkovets.model.gameobjects.Box;
 import ru.rsreu.tishkovets.model.gameobjects.MainHero;
 import ru.rsreu.tishkovets.model.gameobjects.Wall;
@@ -19,10 +21,12 @@ import java.util.List;
 
 public class GameModel implements GameAction {
     private final EventManager eventManager;
+    private volatile static GameState gameState = GameState.NEW;
 
     private final MainHero mainHero = new MainHero(0, 0, Settings.OBJECT_SIZE - 4, this);
     private final List<Wall> walls = new ArrayList<>();
     private final List<Box> boxes = new ArrayList<>();
+    private final List<Bomb> bombs = new ArrayList<>();
 
     public GameModel(EventManager eventManager) {
         this.eventManager = eventManager;
@@ -38,7 +42,6 @@ public class GameModel implements GameAction {
         Rectangle mainHeroRect = new Rectangle((int) mainHero.getPositionX(), (int) mainHero.getPositionY(),
                 (int) mainHero.getSize(), (int) mainHero.getSize());
 
-
         return checkOutsideWallsCollision(mainHeroRect, mainHero.getSpeed(), eventType) &&
                 checkBoxesCollision(mainHeroRect) && checkInsideWallsCollision(mainHeroRect);
     }
@@ -49,18 +52,32 @@ public class GameModel implements GameAction {
             eventManager.notify(eventType, createInitData());
 
         } else if (eventType == EventType.MODEL_UPDATE) {
-            eventManager.notify(eventType, new ModelUpdateEventData(createMainHeroData()));
+            eventManager.notify(eventType, new ModelUpdateEventData(createMainHeroData(), createBombsData()));
         }
     }
 
     @Override
     public void placeBomb() {
 
+        double bombPositionX = mainHero.getPositionX();
+        double bombPositionY = mainHero.getPositionY();
+        double bombSize = mainHero.getSize();
+
+        Bomb bomb = new Bomb(bombPositionX, bombPositionY, bombSize, this);
+        bombs.add(bomb);
+
+        update(EventType.MODEL_UPDATE);
+
     }
 
     @Override
     public void pause(boolean isPaused) {
-
+        if (isPaused) {
+            gameState = GameState.PAUSED;
+        } else {
+            gameState = GameState.RUNNING;
+        }
+        update(EventType.MODEL_UPDATE);
     }
 
     @Override
@@ -110,6 +127,15 @@ public class GameModel implements GameAction {
                 currentBoxesNumber += 1;
             }
         }
+    }
+
+    private List<BombData> createBombsData() {
+        List<BombData> bombData = new ArrayList<>();
+        for (Bomb bomb : bombs) {
+            BombData temp = new BombData(bomb.getPositionX(), bomb.getPositionY(), bomb.getSize());
+            bombData.add(temp);
+        }
+        return bombData;
     }
 
     private MainHeroData createMainHeroData() {
@@ -164,7 +190,19 @@ public class GameModel implements GameAction {
         }
         return true;
     }
+    private boolean  checkBombsCollision(Rectangle mainHeroRect) {
+        for (Bomb bomb : bombs) {
+            int boxPositionX = (int) bomb.getPositionX();
+            int boxPositionY = (int) bomb.getPositionY();
+            int boxSize = (int) bomb.getSize();
+            Rectangle wallRect = new Rectangle(boxPositionX, boxPositionY, boxSize, boxSize);
 
+            if (mainHeroRect.intersects(wallRect)) {
+                return false;
+            }
+        }
+        return true;
+    }
     private boolean checkBoxesCollision(Rectangle mainHeroRect) {
         for (Box box : boxes) {
             int boxPositionX = (int) box.getPositionX();
@@ -195,5 +233,3 @@ public class GameModel implements GameAction {
         return boxes;
     }
 }
-
-

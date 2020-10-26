@@ -1,20 +1,24 @@
 package ru.rsreu.tishkovets.events.data;
 
-import ru.rsreu.tishkovets.events.data.object.BoxData;
+import ru.rsreu.tishkovets.events.data.object.BombData;
 import ru.rsreu.tishkovets.events.data.object.MainHeroData;
-import ru.rsreu.tishkovets.events.data.object.WallData;
 
 import java.util.List;
 
-public class ModelUpdateEventData implements EventData{
+public class ModelUpdateEventData implements EventData {
     private final MainHeroData mainHeroData;
+    private final List<BombData> bombsData;
 
-    public ModelUpdateEventData(MainHeroData mainHeroData) {
+    public ModelUpdateEventData(MainHeroData mainHeroData, List<BombData> bombsData) {
         this.mainHeroData = mainHeroData;
+        this.bombsData = bombsData;
     }
 
     public MainHeroData getMainHeroData() {
         return mainHeroData;
     }
 
+    public List<BombData> getBombsData() {
+        return bombsData;
+    }
 }

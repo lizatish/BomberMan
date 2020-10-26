@@ -8,44 +8,52 @@ import java.util.Collections;
 import java.util.List;
 
 public enum GameEventType {
-    START(Collections.singletonList(KeyEvent.VK_ENTER)) {
+    START(Collections.singletonList(KeyEvent.getKeyText(KeyEvent.VK_ENTER).toUpperCase())) {
         @Override
         public void startAction(GameAction game) {
             game.start();
         }
     },
-    PAUSE(Arrays.asList(KeyEvent.VK_P, KeyEvent.VK_O)) {
+    PAUSE(Arrays.asList(KeyEvent.getKeyText(KeyEvent.VK_P).toUpperCase(),
+            KeyEvent.getKeyText(KeyEvent.VK_O).toUpperCase())) {
         @Override
         public void startAction(GameAction game) {
             game.pause(!game.isPaused());
         }
     },
-    BOMB(Arrays.asList(KeyEvent.VK_SPACE, KeyEvent.VK_ALT)) {
+    BOMB(Arrays.asList(KeyEvent.getKeyText(KeyEvent.VK_SPACE).toUpperCase(),
+            KeyEvent.getKeyText(KeyEvent.VK_ALT).toUpperCase())) {
         @Override
         public void startAction(GameAction game) {
             game.placeBomb();
+            System.out.println("booo");
         }
     };
 
-    private final List<Integer> keyCodes;
+    private final List<String> keyNames;
 
-    GameEventType(List<Integer> keyCode) {
-        this.keyCodes = keyCode;
+    GameEventType(List<String> keyNames) {
+        this.keyNames = keyNames;
     }
 
-    public static GameEventType getGameEventByKeyCode(int keyCode) {
+
+    public static GameEventType getGameEventTypeByKeyName(List<String> keyNames) {
+
         GameEventType result = null;
-        for (GameEventType eventType : GameEventType.values()) {
-            if (eventType.getKeyCode().contains(keyCode)) {
-                result = eventType;
-                break;
+        if (!keyNames.isEmpty()) {
+            String keyName = keyNames.get(0);
+            for (GameEventType eventType : GameEventType.values()) {
+                if (eventType.getKeyName().contains(keyName)) {
+                    result = eventType;
+                    break;
+                }
             }
         }
         return result;
     }
 
-    public List<Integer> getKeyCode() {
-        return keyCodes;
+    public List<String> getKeyName() {
+        return keyNames;
     }
 
     public abstract void startAction(GameAction game);
