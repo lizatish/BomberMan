@@ -6,5 +6,6 @@ public class Settings {
 
     public static final double OBJECT_SIZE = 60;
     public static final double WALLS_NUMBER_IN_ROW = 10;
-    public static final double BOXES_NUMBER = 30;
+    public static final double BOXES_NUMBER = 120;
+    public static final double  ENEMYES_NUMBER = 3;
 }

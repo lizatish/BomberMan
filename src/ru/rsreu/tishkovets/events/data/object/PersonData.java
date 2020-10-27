@@ -1,13 +1,13 @@
 package ru.rsreu.tishkovets.events.data.object;
 
-public class MainHeroData {
+public class PersonData {
     private final double positionX;
     private final double positionY;
     private final double prevPositionX;
     private final double prevPositionY;
     private final double size;
 
-    public MainHeroData(double x, double y, double px, double py, double size) {
+    public PersonData(double x, double y, double px, double py, double size) {
         positionX = x;
         positionY = y;
         prevPositionX = px;

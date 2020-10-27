@@ -3,7 +3,7 @@ package ru.rsreu.tishkovets.view.object;
 import javafx.scene.canvas.GraphicsContext;
 import ru.rsreu.tishkovets.events.data.EventData;
 import ru.rsreu.tishkovets.events.data.ModelUpdateEventData;
-import ru.rsreu.tishkovets.events.data.object.ObjectData;
+import ru.rsreu.tishkovets.events.data.object.StaticObjectData;
 
 import java.util.List;
 
@@ -19,8 +19,8 @@ public class BombsView extends BaseView {
         ModelUpdateEventData renderData = (ModelUpdateEventData) data;
 
 
-        List<ObjectData> bombs = renderData.getBombsData();
-        for (ObjectData bomb : bombs) {
+        List<StaticObjectData> bombs = renderData.getBombsData();
+        for (StaticObjectData bomb : bombs) {
             if (!isImageSet) {
                 setImage(imageFilename, bomb.getSize());
                 isImageSet = true;

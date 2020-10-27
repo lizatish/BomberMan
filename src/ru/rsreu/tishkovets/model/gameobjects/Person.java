@@ -3,22 +3,16 @@ package ru.rsreu.tishkovets.model.gameobjects;
 
 import ru.rsreu.tishkovets.events.EventType;
 import ru.rsreu.tishkovets.model.GameModel;
+import ru.rsreu.tishkovets.model.move.Mob;
 import ru.rsreu.tishkovets.model.move.Movable;
 
-public abstract class Person implements Movable {
-    private double positionX;
-    private double positionY;
-    private double prevPositionX;
-    private double prevPositionY;
-    private final double size;
-    private double speed = 1;
-    private final GameModel model;
+public abstract class Person extends Mob implements Movable {
+    protected double speed = 1;
+    protected final GameModel model;
 
     Person(double x, double y, double size, GameModel model) {
+        super(x, y, size);
         this.model = model;
-        this.size = size;
-        positionX = x;
-        positionY = y;
     }
 
     @Override

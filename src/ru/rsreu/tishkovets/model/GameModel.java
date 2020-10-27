@@ -4,14 +4,11 @@ import ru.rsreu.tishkovets.Settings;
 import ru.rsreu.tishkovets.events.MovableEventType;
 import ru.rsreu.tishkovets.events.EventType;
 import ru.rsreu.tishkovets.events.data.InitEventData;
-import ru.rsreu.tishkovets.events.data.object.ObjectData;
+import ru.rsreu.tishkovets.events.data.object.StaticObjectData;
 import ru.rsreu.tishkovets.events.data.ModelUpdateEventData;
 import ru.rsreu.tishkovets.events.EventManager;
-import ru.rsreu.tishkovets.events.data.object.MainHeroData;
-import ru.rsreu.tishkovets.model.gameobjects.Bomb;
-import ru.rsreu.tishkovets.model.gameobjects.Box;
-import ru.rsreu.tishkovets.model.gameobjects.MainHero;
-import ru.rsreu.tishkovets.model.gameobjects.Wall;
+import ru.rsreu.tishkovets.events.data.object.PersonData;
+import ru.rsreu.tishkovets.model.gameobjects.*;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -25,9 +22,11 @@ public class GameModel implements GameAction {
     private final List<Wall> walls = new ArrayList<>();
     private final List<Box> boxes = new ArrayList<>();
     private final List<Bomb> bombs = new ArrayList<>();
+    private final List<Enemy> enemyes = new ArrayList<>();
 
     public GameModel(EventManager eventManager) {
         this.eventManager = eventManager;
+        generateEnemyes();
         generateWallsAndBoxes();
     }
 
@@ -50,7 +49,8 @@ public class GameModel implements GameAction {
             eventManager.notify(eventType, createInitData());
 
         } else if (eventType == EventType.MODEL_UPDATE) {
-            eventManager.notify(eventType, new ModelUpdateEventData(createMainHeroData(), createBombsData()));
+            eventManager.notify(eventType, new ModelUpdateEventData(createMainHeroData(),
+                    createBombsData(), createEnemyesData()));
         }
     }
 
@@ -74,6 +74,7 @@ public class GameModel implements GameAction {
             gameState = GameState.PAUSED;
         } else {
             gameState = GameState.RUNNING;
+//            update(EventType.INIT_UPDATE);
         }
         update(EventType.MODEL_UPDATE);
     }
@@ -99,6 +100,22 @@ public class GameModel implements GameAction {
         return horizontalStep;
     }
 
+    private void generateEnemyes() {
+        if (Settings.ENEMYES_NUMBER == 1) {
+            enemyes.add(new Enemy(Settings.FIELD_WIDTH - Settings.OBJECT_SIZE,
+                    Settings.FIELD_HEIGHT - Settings.OBJECT_SIZE, Settings.OBJECT_SIZE, this));
+        } else if (Settings.ENEMYES_NUMBER == 2) {
+            enemyes.add(new Enemy(Settings.FIELD_WIDTH - Settings.OBJECT_SIZE, 0, Settings.OBJECT_SIZE, this));
+            enemyes.add(new Enemy(Settings.FIELD_WIDTH - Settings.OBJECT_SIZE,
+                    Settings.FIELD_HEIGHT - Settings.OBJECT_SIZE, Settings.OBJECT_SIZE, this));
+        } else {
+            enemyes.add(new Enemy(Settings.FIELD_WIDTH - Settings.OBJECT_SIZE, 0, Settings.OBJECT_SIZE, this));
+            enemyes.add(new Enemy(Settings.FIELD_WIDTH - Settings.OBJECT_SIZE,
+                    Settings.FIELD_HEIGHT - Settings.OBJECT_SIZE, Settings.OBJECT_SIZE, this));
+            enemyes.add(new Enemy(0, Settings.FIELD_HEIGHT - Settings.OBJECT_SIZE, Settings.OBJECT_SIZE, this));
+        }
+    }
+
     private void createWalls() {
         double horizontalStep = getHorizontalStep();
         for (double i = horizontalStep; i < Settings.FIELD_WIDTH; i += 2 * horizontalStep) {
@@ -117,12 +134,16 @@ public class GameModel implements GameAction {
             int y = getRandomNumber(0, Settings.FIELD_HEIGHT - 1);
             x -= x % horizontalStep;
             y -= y % Settings.OBJECT_SIZE;
-            if (x < 2 * Settings.OBJECT_SIZE && 2 * y < Settings.OBJECT_SIZE ||
-                    x > Settings.FIELD_WIDTH - 2 * Settings.OBJECT_SIZE
-                            && y > Settings.FIELD_HEIGHT - 2 * Settings.OBJECT_SIZE) {
+            if (x < 3 * Settings.OBJECT_SIZE && y < 3 * Settings.OBJECT_SIZE) {
+                continue;
+            } else if (x > Settings.FIELD_WIDTH - 3 * Settings.OBJECT_SIZE
+                    && y > Settings.FIELD_HEIGHT - 3 * Settings.OBJECT_SIZE) {
+                continue;
+            } else if (x < 3 * Settings.OBJECT_SIZE && y > Settings.FIELD_HEIGHT - 3 * Settings.OBJECT_SIZE) {
+                continue;
+            } else if (x > Settings.FIELD_WIDTH - 3 * Settings.OBJECT_SIZE && y < 3 * Settings.OBJECT_SIZE) {
                 continue;
             }
-
             if (!walls.contains(new Wall(x, y, Settings.OBJECT_SIZE))) {
                 boxes.add(new Box(x, y, Settings.OBJECT_SIZE));
                 currentBoxesNumber += 1;
@@ -130,35 +151,51 @@ public class GameModel implements GameAction {
         }
     }
 
-    private List<ObjectData> createBombsData() {
-        List<ObjectData> bombData = new ArrayList<>();
+    private List<StaticObjectData> createBombsData() {
+        List<StaticObjectData> bombData = new ArrayList<>();
         for (Bomb bomb : bombs) {
-            ObjectData temp = new ObjectData(bomb.getPositionX(), bomb.getPositionY(), bomb.getSize());
+            StaticObjectData temp = new StaticObjectData(bomb.getPositionX(), bomb.getPositionY(), bomb.getSize());
             bombData.add(temp);
         }
         return bombData;
     }
 
-    private MainHeroData createMainHeroData() {
-        return new MainHeroData(mainHero.getPositionX(), mainHero.getPositionY(),
+    private PersonData createMainHeroData() {
+        return new PersonData(mainHero.getPositionX(), mainHero.getPositionY(),
                 mainHero.getPrevPositionX(), mainHero.getPrevPositionY(), mainHero.getSize());
     }
 
-    private InitEventData createInitData() {
-        List<ObjectData> wallsData = new ArrayList<>();
+    private List<PersonData> createEnemyesData() {
+        List<PersonData> enemyesData = new ArrayList<>();
+        for (Enemy enemy : enemyes) {
+            PersonData enemyData = new PersonData(enemy.getPositionX(), enemy.getPositionY(),
+                    enemy.getPrevPositionX(), enemy.getPrevPositionY(), enemy.getSize());
+            enemyesData.add(enemyData);
+        }
+        return enemyesData;
+    }
+
+    private List<StaticObjectData> createWallsData() {
+        List<StaticObjectData> wallsData = new ArrayList<>();
         for (Wall wall : walls) {
-            ObjectData temp = new ObjectData(wall.getPositionX(), wall.getPositionY(), wall.getSize());
+            StaticObjectData temp = new StaticObjectData(wall.getPositionX(), wall.getPositionY(), wall.getSize());
             wallsData.add(temp);
         }
-        List<ObjectData> boxesData = new ArrayList<>();
+        return wallsData;
+    }
+
+    private List<StaticObjectData> createBoxesData() {
+        List<StaticObjectData> boxesData = new ArrayList<>();
         for (Box box : boxes) {
-            ObjectData temp = new ObjectData(box.getPositionX(), box.getPositionY(), box.getSize());
+            StaticObjectData temp = new StaticObjectData(box.getPositionX(), box.getPositionY(), box.getSize());
             boxesData.add(temp);
         }
-        MainHeroData mainHeroData = new MainHeroData(mainHero.getPositionX(), mainHero.getPositionY(),
-                mainHero.getPrevPositionX(), mainHero.getPrevPositionY(), mainHero.getSize());
+        return boxesData;
+    }
 
-        return new InitEventData(mainHeroData, wallsData, boxesData);
+    private InitEventData createInitData() {
+        return new InitEventData(createMainHeroData(), createWallsData(),
+                createEnemyesData(), createBoxesData());
     }
 
     private boolean checkOutsideWallsCollision(Rectangle mainHeroRect, double mainHeroSpeed, MovableEventType eventType) {

@@ -6,7 +6,7 @@ import ru.rsreu.tishkovets.Settings;
 import ru.rsreu.tishkovets.events.EventListener;
 import ru.rsreu.tishkovets.events.data.EventData;
 import ru.rsreu.tishkovets.events.data.InitEventData;
-import ru.rsreu.tishkovets.events.data.object.ObjectData;
+import ru.rsreu.tishkovets.events.data.object.StaticObjectData;
 
 import java.util.List;
 
@@ -25,8 +25,8 @@ public class BoxesView implements EventListener {
 
     public void render(EventData data) {
         InitEventData renderData = (InitEventData)data;
-        List<ObjectData> boxes = renderData.getBoxesData();
-        for (ObjectData box : boxes) {
+        List<StaticObjectData> boxes = renderData.getBoxesData();
+        for (StaticObjectData box : boxes) {
             gc.drawImage(image, box.getPositionX(), box.getPositionY());
         }
     }

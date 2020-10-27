@@ -14,10 +14,8 @@ import ru.rsreu.tishkovets.events.MovableEventType;
 import ru.rsreu.tishkovets.events.EventManager;
 import ru.rsreu.tishkovets.events.EventType;
 import ru.rsreu.tishkovets.view.notification.NewGameNotification;
-import ru.rsreu.tishkovets.view.object.BombsView;
-import ru.rsreu.tishkovets.view.object.BoxesView;
-import ru.rsreu.tishkovets.view.object.MainHeroView;
-import ru.rsreu.tishkovets.view.object.WallsView;
+import ru.rsreu.tishkovets.view.notification.PausedNotifcation;
+import ru.rsreu.tishkovets.view.object.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +25,8 @@ public class GameView {
     private GraphicsContext gc;
     private final GameController controller;
     private final EventManager eventManager;
-    private boolean isPaintGame = false;
+    private boolean isStartGame = false;
+    private boolean isPausedGame = false;
 
     public GameView(GameController controller, EventManager eventManager) {
         this.controller = controller;
@@ -41,30 +40,37 @@ public class GameView {
         WallsView wallsView = new WallsView(gc);
         BoxesView boxesView = new BoxesView(gc);
         BombsView bombsView = new BombsView(gc);
+        EnemyView enemyView = new EnemyView(gc);
+
 
         eventManager.subscribe(EventType.MODEL_UPDATE, mainHeroView);
         eventManager.subscribe(EventType.MODEL_UPDATE, bombsView);
+        eventManager.subscribe(EventType.MODEL_UPDATE, enemyView);
 
         eventManager.subscribe(EventType.INIT_UPDATE, mainHeroView);
         eventManager.subscribe(EventType.INIT_UPDATE, wallsView);
         eventManager.subscribe(EventType.INIT_UPDATE, boxesView);
+        eventManager.subscribe(EventType.INIT_UPDATE, enemyView);
 
         new AnimationTimer() {
             public void handle(long currentNanoTime) {
                 GameEventType gameEventType = GameEventType.getGameEventTypeByKeyName(keyboardInput);
                 if (gameEventType != null) {
-                    if (gameEventType == GameEventType.START) {
-                        isPaintGame = true;
+                    if (gameEventType == GameEventType.START && !isStartGame) {
+                        isStartGame = true;
                         gc.clearRect(0, 0, Settings.FIELD_WIDTH, Settings.FIELD_HEIGHT);
-                    } else if (gameEventType == GameEventType.PAUSE
-                    ) {
-                        isPaintGame = false;
+                    } else if (gameEventType == GameEventType.PAUSE) {
+                        isPausedGame = !isPausedGame;
+                        gc.clearRect(0, 0, Settings.FIELD_WIDTH, Settings.FIELD_HEIGHT);
                     }
                     controller.startAction(gameEventType);
                 }
 
-                if (!isPaintGame) {
+                if (!isStartGame) {
                     NewGameNotification notification = new NewGameNotification();
+                    notification.render(gc);
+                } else if (isPausedGame) {
+                    PausedNotifcation notification = new PausedNotifcation();
                     notification.render(gc);
                 } else {
                     MovableEventType eventType = MovableEventType.getMovableOperationByKeyName(keyboardInput);

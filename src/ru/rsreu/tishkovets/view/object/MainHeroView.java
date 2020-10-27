@@ -4,7 +4,7 @@ import javafx.scene.canvas.GraphicsContext;
 import ru.rsreu.tishkovets.events.data.EventData;
 import ru.rsreu.tishkovets.events.data.InitEventData;
 import ru.rsreu.tishkovets.events.data.ModelUpdateEventData;
-import ru.rsreu.tishkovets.events.data.object.MainHeroData;
+import ru.rsreu.tishkovets.events.data.object.PersonData;
 
 public class MainHeroView extends BaseView {
     public MainHeroView(GraphicsContext gcInit) {
@@ -16,7 +16,8 @@ public class MainHeroView extends BaseView {
     public void render(EventData data) {
         if (data instanceof ModelUpdateEventData) {
             ModelUpdateEventData renderData = (ModelUpdateEventData) data;
-            MainHeroData mainHeroData = renderData.getMainHeroData();
+
+            PersonData mainHeroData = renderData.getMainHeroData();
 
             double mainHeroPositionX = mainHeroData.getPositionX();
             double mainHeroPositionY = mainHeroData.getPositionY();
@@ -25,21 +26,14 @@ public class MainHeroView extends BaseView {
             double mainHeroSize = mainHeroData.getSize();
 
             gc.clearRect(mainHeroPrevPositionX, mainHeroPrevPositionY, mainHeroSize, mainHeroSize);
-
-            if (!isImageSet) {
-                setImage(imageFilename, mainHeroSize);
-                isImageSet = true;
-            }
             gc.drawImage(image, mainHeroPositionX, mainHeroPositionY);
         } else if (data instanceof InitEventData) {
             InitEventData renderData = (InitEventData) data;
-            MainHeroData mainHeroData = renderData.getMainHeroData();
+            PersonData mainHeroData = renderData.getMainHeroData();
 
             double mainHeroPositionX = mainHeroData.getPositionX();
             double mainHeroPositionY = mainHeroData.getPositionY();
             double mainHeroSize = mainHeroData.getSize();
-
-            gc.clearRect(mainHeroPositionX, mainHeroPositionY, mainHeroSize, mainHeroSize);
 
             if (!isImageSet) {
                 setImage(imageFilename, mainHeroSize);
