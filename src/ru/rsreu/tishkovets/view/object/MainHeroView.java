@@ -3,6 +3,7 @@ package ru.rsreu.tishkovets.view.object;
 import javafx.scene.canvas.GraphicsContext;
 import ru.rsreu.tishkovets.events.data.EventData;
 import ru.rsreu.tishkovets.events.data.InitEventData;
+import ru.rsreu.tishkovets.events.data.MainHeroEventData;
 import ru.rsreu.tishkovets.events.data.ModelUpdateEventData;
 import ru.rsreu.tishkovets.events.data.object.PersonData;
 
@@ -14,8 +15,8 @@ public class MainHeroView extends BaseView {
 
     @Override
     public void render(EventData data) {
-        if (data instanceof ModelUpdateEventData) {
-            ModelUpdateEventData renderData = (ModelUpdateEventData) data;
+        if (data instanceof MainHeroEventData) {
+            MainHeroEventData renderData = (MainHeroEventData) data;
 
             PersonData mainHeroData = renderData.getMainHeroData();
 

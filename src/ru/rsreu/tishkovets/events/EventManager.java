@@ -18,6 +18,7 @@ public class EventManager implements Subscriber {
     }
 
     public void subscribe(EventType eventType, EventListener listener) {
+//        eventType.setListeners((List<EventListener>) listener);
         List<EventListener> users = listeners.get(eventType.name());
         users.add(listener);
     }

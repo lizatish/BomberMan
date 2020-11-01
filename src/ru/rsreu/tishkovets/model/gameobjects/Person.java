@@ -10,7 +10,7 @@ public abstract class Person extends Mob implements Movable {
     protected double speed = 1;
     protected final GameModel model;
 
-    Person(double x, double y, double size, GameModel model) {
+    public Person(double x, double y, double size, GameModel model) {
         super(x, y, size);
         this.model = model;
     }
@@ -45,9 +45,12 @@ public abstract class Person extends Mob implements Movable {
         prevPositionY = positionY;
         positionX += x;
         positionY += y;
-        model.update(EventType.MODEL_UPDATE);
+        update();
     }
 
+    public void update(){
+
+    }
     public double getSize() {
         return size;
     }

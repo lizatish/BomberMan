@@ -26,7 +26,6 @@ public enum GameEventType {
         @Override
         public void startAction(GameAction game) {
             game.placeBomb();
-            System.out.println("booo");
         }
     };
 

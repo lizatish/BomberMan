@@ -1,6 +1,7 @@
 package ru.rsreu.tishkovets.view.object;
 
 import javafx.scene.canvas.GraphicsContext;
+import ru.rsreu.tishkovets.events.data.EnemyEventData;
 import ru.rsreu.tishkovets.events.data.EventData;
 import ru.rsreu.tishkovets.events.data.InitEventData;
 import ru.rsreu.tishkovets.events.data.ModelUpdateEventData;
@@ -18,8 +19,8 @@ public class EnemyView extends BaseView {
 
     @Override
     public void render(EventData data) {
-        if (data instanceof ModelUpdateEventData) {
-            ModelUpdateEventData renderData = (ModelUpdateEventData) data;
+        if (data instanceof EnemyEventData) {
+            EnemyEventData renderData = (EnemyEventData) data;
             List<PersonData> enemyesData = renderData.getEnemyesData();
             for (PersonData enemyData : enemyesData) {
                 double enemyPositionX = enemyData.getPositionX();

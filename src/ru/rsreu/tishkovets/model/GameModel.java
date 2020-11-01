@@ -3,7 +3,9 @@ package ru.rsreu.tishkovets.model;
 import ru.rsreu.tishkovets.Settings;
 import ru.rsreu.tishkovets.events.MovableEventType;
 import ru.rsreu.tishkovets.events.EventType;
+import ru.rsreu.tishkovets.events.data.EnemyEventData;
 import ru.rsreu.tishkovets.events.data.InitEventData;
+import ru.rsreu.tishkovets.events.data.MainHeroEventData;
 import ru.rsreu.tishkovets.events.data.object.StaticObjectData;
 import ru.rsreu.tishkovets.events.data.ModelUpdateEventData;
 import ru.rsreu.tishkovets.events.EventManager;
@@ -51,7 +53,12 @@ public class GameModel implements GameAction {
         } else if (eventType == EventType.MODEL_UPDATE) {
             eventManager.notify(eventType, new ModelUpdateEventData(createMainHeroData(),
                     createBombsData(), createEnemyesData()));
+        } else if (eventType == EventType.MAINHERO_UPDATE) {
+            eventManager.notify(eventType, new MainHeroEventData(createMainHeroData()));
+        } else if (eventType == EventType.ENEMY_UPDATE) {
+            eventManager.notify(eventType, new EnemyEventData(createEnemyesData()));
         }
+
     }
 
     @Override
@@ -74,7 +81,7 @@ public class GameModel implements GameAction {
             gameState = GameState.PAUSED;
         } else {
             gameState = GameState.RUNNING;
-//            update(EventType.INIT_UPDATE);
+            update(EventType.INIT_UPDATE);
         }
         update(EventType.MODEL_UPDATE);
     }

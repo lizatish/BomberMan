@@ -43,9 +43,9 @@ public class GameView {
         EnemyView enemyView = new EnemyView(gc);
 
 
-        eventManager.subscribe(EventType.MODEL_UPDATE, mainHeroView);
+        eventManager.subscribe(EventType.MAINHERO_UPDATE, mainHeroView);
         eventManager.subscribe(EventType.MODEL_UPDATE, bombsView);
-        eventManager.subscribe(EventType.MODEL_UPDATE, enemyView);
+        eventManager.subscribe(EventType.ENEMY_UPDATE, enemyView);
 
         eventManager.subscribe(EventType.INIT_UPDATE, mainHeroView);
         eventManager.subscribe(EventType.INIT_UPDATE, wallsView);
