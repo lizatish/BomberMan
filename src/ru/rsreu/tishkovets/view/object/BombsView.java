@@ -17,16 +17,13 @@ public class BombsView extends BaseView {
     @Override
     public void render(EventData data) {
         BombEventData renderData = (BombEventData) data;
-
-
-        List<StaticObjectData> bombs = renderData.getBombsData();
-        for (StaticObjectData bomb : bombs) {
-            if (!isImageSet) {
-                setImage(imageFilename, bomb.getSize());
-                isImageSet = true;
-            }
-            gc.drawImage(image, bomb.getPositionX(), bomb.getPositionY());
+        StaticObjectData bomb = renderData.getBombData();
+        if (!isImageSet) {
+            setImage(imageFilename, bomb.getSize());
+            isImageSet = true;
         }
+        gc.drawImage(image, bomb.getPositionX(), bomb.getPositionY());
+
     }
 
     @Override

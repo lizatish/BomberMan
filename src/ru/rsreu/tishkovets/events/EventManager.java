@@ -13,7 +13,7 @@ public class EventManager {
         eventType.subscribe(listener);
     }
 
-    public void notify(EventType eventType, EventData data) {
+    public synchronized void notify(EventType eventType, EventData data) {
         List<EventListener> users = eventType.getListeners();
         for (EventListener listener : users) {
             listener.update(data);

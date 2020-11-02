@@ -19,17 +19,17 @@ public class EnemyView extends BaseView {
     public void render(EventData data) {
         if (data instanceof EnemyEventData) {
             EnemyEventData renderData = (EnemyEventData) data;
-            List<PersonData> enemyesData = renderData.getEnemyesData();
-            for (PersonData enemyData : enemyesData) {
-                double enemyPositionX = enemyData.getPositionX();
-                double enemyPositionY = enemyData.getPositionY();
-                double enemyPrevPositionX = enemyData.getPrevPositionX();
-                double enemyPrevPositionY = enemyData.getPrevPositionY();
-                double enemySize = enemyData.getSize();
+            PersonData enemyData = renderData.getEnemyData();
+            double enemyPositionX = enemyData.getPositionX();
+            double enemyPositionY = enemyData.getPositionY();
+            double enemyPrevPositionX = enemyData.getPrevPositionX();
+            double enemyPrevPositionY = enemyData.getPrevPositionY();
+            double enemySize = enemyData.getSize();
 
-                gc.clearRect(enemyPrevPositionX, enemyPrevPositionY, enemySize, enemySize);
-                gc.drawImage(image, enemyPositionX, enemyPositionY);
-            }
+            gc.clearRect(enemyPrevPositionX, enemyPrevPositionY, enemySize, enemySize);
+            gc.drawImage(image, enemyPositionX, enemyPositionY);
+
+
         } else if (data instanceof InitEventData) {
             InitEventData renderData = (InitEventData) data;
             List<PersonData> enemyesData = renderData.getEnemyesData();

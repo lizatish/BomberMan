@@ -1,18 +1,19 @@
 package ru.rsreu.tishkovets.events.data;
 
 import ru.rsreu.tishkovets.events.data.object.StaticObjectData;
+
 import java.util.List;
 
 
 public class BombEventData implements EventData {
-    private final List<StaticObjectData> bombsData;
+    private final StaticObjectData bombData;
 
-    public BombEventData(List<StaticObjectData> mainHeroData) {
-        this.bombsData = mainHeroData;
+    public BombEventData(StaticObjectData bombData) {
+        this.bombData = bombData;
     }
 
-    public List<StaticObjectData> getBombsData() {
-        return bombsData;
+    public StaticObjectData getBombData() {
+        return bombData;
     }
 
 }

@@ -17,14 +17,19 @@ public class GameModel implements GameAction {
     private final EventManager eventManager;
     private volatile static GameState gameState = GameState.NEW;
 
-    private final MainHero mainHero = new MainHero(0, 0, Settings.OBJECT_SIZE - 4, this);
+    private final MainHero mainHero;
     private final List<Wall> walls = new ArrayList<>();
     private final List<Box> boxes = new ArrayList<>();
     private final List<Bomb> bombs = new ArrayList<>();
     private final List<Enemy> enemyes = new ArrayList<>();
 
+    private int bombCount;
+
     public GameModel(EventManager eventManager) {
         this.eventManager = eventManager;
+
+        mainHero = new MainHero(0, 0, Settings.OBJECT_SIZE - 4, eventManager);
+
         generateEnemyes();
         generateWallsAndBoxes();
     }
@@ -46,27 +51,22 @@ public class GameModel implements GameAction {
     public void update(EventType eventType) {
         if (eventType == EventType.INIT_UPDATE) {
             eventManager.notify(eventType, createInitData());
-        } else if (eventType == EventType.MAINHERO_UPDATE) {
-            eventManager.notify(eventType, new MainHeroEventData(createMainHeroData()));
-        } else if (eventType == EventType.ENEMY_UPDATE) {
-            eventManager.notify(eventType, new EnemyEventData(createEnemyesData()));
-        } else if (eventType == EventType.BOMB_UPDATE) {
-            eventManager.notify(eventType, new BombEventData(createBombsData()));
         }
-
     }
 
     @Override
     public void placeBomb() {
-
+//        if (bombCount != 0) {
+//            bombCount--;
         double bombPositionX = mainHero.getPositionX();
         double bombPositionY = mainHero.getPositionY();
         double bombSize = mainHero.getSize();
 
-        Bomb bomb = new Bomb(bombPositionX, bombPositionY, bombSize, this);
+        Bomb bomb = new Bomb(bombPositionX, bombPositionY, bombSize, eventManager);
         bombs.add(bomb);
-
-        update(EventType.BOMB_UPDATE);
+        Thread thread = new Thread(bomb);
+        thread.start();
+        //        }
 
     }
 
@@ -105,16 +105,19 @@ public class GameModel implements GameAction {
     private void generateEnemyes() {
         if (Settings.ENEMYES_NUMBER == 1) {
             enemyes.add(new Enemy(Settings.FIELD_WIDTH - Settings.OBJECT_SIZE,
-                    Settings.FIELD_HEIGHT - Settings.OBJECT_SIZE, Settings.OBJECT_SIZE, this));
+                    Settings.FIELD_HEIGHT - Settings.OBJECT_SIZE, Settings.OBJECT_SIZE, eventManager));
         } else if (Settings.ENEMYES_NUMBER == 2) {
-            enemyes.add(new Enemy(Settings.FIELD_WIDTH - Settings.OBJECT_SIZE, 0, Settings.OBJECT_SIZE, this));
             enemyes.add(new Enemy(Settings.FIELD_WIDTH - Settings.OBJECT_SIZE,
-                    Settings.FIELD_HEIGHT - Settings.OBJECT_SIZE, Settings.OBJECT_SIZE, this));
+                    0, Settings.OBJECT_SIZE, eventManager));
+            enemyes.add(new Enemy(Settings.FIELD_WIDTH - Settings.OBJECT_SIZE,
+                    Settings.FIELD_HEIGHT - Settings.OBJECT_SIZE, Settings.OBJECT_SIZE, eventManager));
         } else {
-            enemyes.add(new Enemy(Settings.FIELD_WIDTH - Settings.OBJECT_SIZE, 0, Settings.OBJECT_SIZE, this));
             enemyes.add(new Enemy(Settings.FIELD_WIDTH - Settings.OBJECT_SIZE,
-                    Settings.FIELD_HEIGHT - Settings.OBJECT_SIZE, Settings.OBJECT_SIZE, this));
-            enemyes.add(new Enemy(0, Settings.FIELD_HEIGHT - Settings.OBJECT_SIZE, Settings.OBJECT_SIZE, this));
+                    0, Settings.OBJECT_SIZE, eventManager));
+            enemyes.add(new Enemy(Settings.FIELD_WIDTH - Settings.OBJECT_SIZE,
+                    Settings.FIELD_HEIGHT - Settings.OBJECT_SIZE, Settings.OBJECT_SIZE, eventManager));
+            enemyes.add(new Enemy(0, Settings.FIELD_HEIGHT - Settings.OBJECT_SIZE,
+                    Settings.OBJECT_SIZE, eventManager));
         }
     }
 
@@ -153,26 +156,10 @@ public class GameModel implements GameAction {
         }
     }
 
-    private List<StaticObjectData> createBombsData() {
-        List<StaticObjectData> bombData = new ArrayList<>();
-        for (Bomb bomb : bombs) {
-            StaticObjectData temp = new StaticObjectData(bomb.getPositionX(), bomb.getPositionY(), bomb.getSize());
-            bombData.add(temp);
-        }
-        return bombData;
-    }
-
-    private PersonData createMainHeroData() {
-        return new PersonData(mainHero.getPositionX(), mainHero.getPositionY(),
-                mainHero.getPrevPositionX(), mainHero.getPrevPositionY(), mainHero.getSize());
-    }
-
     private List<PersonData> createEnemyesData() {
         List<PersonData> enemyesData = new ArrayList<>();
         for (Enemy enemy : enemyes) {
-            PersonData enemyData = new PersonData(enemy.getPositionX(), enemy.getPositionY(),
-                    enemy.getPrevPositionX(), enemy.getPrevPositionY(), enemy.getSize());
-            enemyesData.add(enemyData);
+            enemyesData.add(enemy.createEnemyData());
         }
         return enemyesData;
     }
@@ -196,7 +183,7 @@ public class GameModel implements GameAction {
     }
 
     private InitEventData createInitData() {
-        return new InitEventData(createMainHeroData(), createWallsData(),
+        return new InitEventData(mainHero.createMainHeroData(), createWallsData(),
                 createEnemyesData(), createBoxesData());
     }
 
@@ -267,11 +254,8 @@ public class GameModel implements GameAction {
         return mainHero;
     }
 
-    public List<Wall> getWalls() {
-        return walls;
+    public static GameState getGameState() {
+        return gameState;
     }
 
-    public List<Box> getBoxes() {
-        return boxes;
-    }
 }

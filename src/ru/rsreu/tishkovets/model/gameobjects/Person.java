@@ -1,6 +1,8 @@
 package ru.rsreu.tishkovets.model.gameobjects;
 
 
+import javafx.event.Event;
+import ru.rsreu.tishkovets.events.EventManager;
 import ru.rsreu.tishkovets.events.EventType;
 import ru.rsreu.tishkovets.model.GameModel;
 import ru.rsreu.tishkovets.model.move.Mob;
@@ -8,11 +10,10 @@ import ru.rsreu.tishkovets.model.move.Movable;
 
 public abstract class Person extends Mob implements Movable {
     protected double speed = 1;
-    protected final GameModel model;
-
-    public Person(double x, double y, double size, GameModel model) {
+    protected EventManager eventManager;
+    public Person(double x, double y, double size,  EventManager eventManager) {
         super(x, y, size);
-        this.model = model;
+        this.eventManager = eventManager;
     }
 
     @Override
@@ -48,9 +49,9 @@ public abstract class Person extends Mob implements Movable {
         update();
     }
 
-    public void update(){
-
+    public void update() {
     }
+
     public double getSize() {
         return size;
     }

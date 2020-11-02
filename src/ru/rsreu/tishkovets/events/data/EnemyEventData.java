@@ -6,14 +6,14 @@ import java.util.List;
 
 
 public class EnemyEventData implements EventData {
-    private final List<PersonData> enemyesData;
+    private final PersonData enemyData;
 
-    public EnemyEventData(List<PersonData> mainHeroData) {
-        this.enemyesData = mainHeroData;
+    public EnemyEventData(PersonData enemyData) {
+        this.enemyData = enemyData;
     }
 
-    public List<PersonData> getEnemyesData() {
-        return enemyesData;
+    public PersonData getEnemyData() {
+        return enemyData;
     }
 
 }
