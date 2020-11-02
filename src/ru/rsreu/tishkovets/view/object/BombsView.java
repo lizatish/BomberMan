@@ -1,8 +1,8 @@
 package ru.rsreu.tishkovets.view.object;
 
 import javafx.scene.canvas.GraphicsContext;
+import ru.rsreu.tishkovets.events.data.BombEventData;
 import ru.rsreu.tishkovets.events.data.EventData;
-import ru.rsreu.tishkovets.events.data.ModelUpdateEventData;
 import ru.rsreu.tishkovets.events.data.object.StaticObjectData;
 
 import java.util.List;
@@ -16,7 +16,7 @@ public class BombsView extends BaseView {
 
     @Override
     public void render(EventData data) {
-        ModelUpdateEventData renderData = (ModelUpdateEventData) data;
+        BombEventData renderData = (BombEventData) data;
 
 
         List<StaticObjectData> bombs = renderData.getBombsData();
@@ -27,5 +27,11 @@ public class BombsView extends BaseView {
             }
             gc.drawImage(image, bomb.getPositionX(), bomb.getPositionY());
         }
+    }
+
+    @Override
+    public void update(EventData data) {
+//        System.out.println("Walls update");
+        render(data);
     }
 }

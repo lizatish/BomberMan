@@ -1,38 +1,80 @@
 package ru.rsreu.tishkovets.events;
 
-import java.util.List;
+import java.util.*;
 
 public enum EventType {
     INIT_UPDATE {
-//        public void setListeners(List<EventListener> listeners) {
-//            this.listeners = listeners;
-//        }
-//
-//        private List<EventListener> listeners;
-//
-//        public void subscribe(EventListener listener) {
-//            listeners.add(listener);
-//        }
-    },
+        public List<EventListener> getListeners() {
+            return listeners;
+        }
 
-    MODEL_UPDATE {
+        public void subscribe(EventListener listener) {
+            if (listeners == null) {
+                listeners = new ArrayList<>();
+            }
+            this.listeners.add(listener);
+        }
 
+        private List<EventListener> listeners;
     },
     MAINHERO_UPDATE {
+        public List<EventListener> getListeners() {
+            return listeners;
+        }
 
+        public void subscribe(EventListener listener) {
+            if (listeners == null) {
+                listeners = new ArrayList<>();
+            }
+            this.listeners.add(listener);
+        }
+
+        private List<EventListener> listeners;
     },
     ENEMY_UPDATE {
+        public List<EventListener> getListeners() {
+            return listeners;
+        }
 
+        public void subscribe(EventListener listener) {
+            if (listeners == null) {
+                listeners = new ArrayList<>();
+            }
+            this.listeners.add(listener);
+        }
+
+        private List<EventListener> listeners;
     },
     BOMB_UPDATE {
+        public List<EventListener> getListeners() {
+            return listeners;
+        }
 
+        public void subscribe(EventListener listener) {
+            if (listeners == null) {
+                listeners = new ArrayList<>();
+            }
+            this.listeners.add(listener);
+        }
+
+        private List<EventListener> listeners;
     },
     EXPLOSION_UPDATE {
+        public List<EventListener> getListeners() {
+            return listeners;
+        }
 
+        public void subscribe(EventListener listener) {
+            if (listeners == null) {
+                listeners = new ArrayList<>();
+            }
+            this.listeners.add(listener);
+        }
+
+        private List<EventListener> listeners;
     };
-//    private List<EventListener> listeners;
-//
-//    public abstract void subscribe(EventListener listener);
-//
-//    public abstract void setListeners(List<EventListener> listeners);
+
+    public abstract void subscribe(EventListener listeners);
+
+    public abstract List<EventListener> getListeners();
 }

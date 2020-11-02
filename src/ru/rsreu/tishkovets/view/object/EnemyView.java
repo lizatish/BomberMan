@@ -4,9 +4,7 @@ import javafx.scene.canvas.GraphicsContext;
 import ru.rsreu.tishkovets.events.data.EnemyEventData;
 import ru.rsreu.tishkovets.events.data.EventData;
 import ru.rsreu.tishkovets.events.data.InitEventData;
-import ru.rsreu.tishkovets.events.data.ModelUpdateEventData;
 import ru.rsreu.tishkovets.events.data.object.PersonData;
-import ru.rsreu.tishkovets.model.gameobjects.Person;
 
 import java.util.List;
 

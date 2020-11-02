@@ -3,11 +3,8 @@ package ru.rsreu.tishkovets.model;
 import ru.rsreu.tishkovets.Settings;
 import ru.rsreu.tishkovets.events.MovableEventType;
 import ru.rsreu.tishkovets.events.EventType;
-import ru.rsreu.tishkovets.events.data.EnemyEventData;
-import ru.rsreu.tishkovets.events.data.InitEventData;
-import ru.rsreu.tishkovets.events.data.MainHeroEventData;
+import ru.rsreu.tishkovets.events.data.*;
 import ru.rsreu.tishkovets.events.data.object.StaticObjectData;
-import ru.rsreu.tishkovets.events.data.ModelUpdateEventData;
 import ru.rsreu.tishkovets.events.EventManager;
 import ru.rsreu.tishkovets.events.data.object.PersonData;
 import ru.rsreu.tishkovets.model.gameobjects.*;
@@ -49,14 +46,12 @@ public class GameModel implements GameAction {
     public void update(EventType eventType) {
         if (eventType == EventType.INIT_UPDATE) {
             eventManager.notify(eventType, createInitData());
-
-        } else if (eventType == EventType.MODEL_UPDATE) {
-            eventManager.notify(eventType, new ModelUpdateEventData(createMainHeroData(),
-                    createBombsData(), createEnemyesData()));
         } else if (eventType == EventType.MAINHERO_UPDATE) {
             eventManager.notify(eventType, new MainHeroEventData(createMainHeroData()));
         } else if (eventType == EventType.ENEMY_UPDATE) {
             eventManager.notify(eventType, new EnemyEventData(createEnemyesData()));
+        } else if (eventType == EventType.BOMB_UPDATE) {
+            eventManager.notify(eventType, new BombEventData(createBombsData()));
         }
 
     }
@@ -71,7 +66,7 @@ public class GameModel implements GameAction {
         Bomb bomb = new Bomb(bombPositionX, bombPositionY, bombSize, this);
         bombs.add(bomb);
 
-        update(EventType.MODEL_UPDATE);
+        update(EventType.BOMB_UPDATE);
 
     }
 
@@ -83,7 +78,7 @@ public class GameModel implements GameAction {
             gameState = GameState.RUNNING;
             update(EventType.INIT_UPDATE);
         }
-        update(EventType.MODEL_UPDATE);
+//        update(EventType.MODEL_UPDATE);
     }
 
     @Override
