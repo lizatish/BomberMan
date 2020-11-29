@@ -1,9 +1,9 @@
 package ru.rsreu.tishkovets.view.object;
 
 import javafx.scene.canvas.GraphicsContext;
-import ru.rsreu.tishkovets.events.data.EnemyEventData;
 import ru.rsreu.tishkovets.events.data.EventData;
 import ru.rsreu.tishkovets.events.data.InitEventData;
+import ru.rsreu.tishkovets.events.data.object.EnemyEventData;
 import ru.rsreu.tishkovets.events.data.object.PersonData;
 
 import java.util.List;

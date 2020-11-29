@@ -11,7 +11,8 @@ import ru.rsreu.tishkovets.model.move.Movable;
 public abstract class Person extends Mob implements Movable {
     protected double speed = 1;
     protected EventManager eventManager;
-    public Person(double x, double y, double size,  EventManager eventManager) {
+
+    public Person(double x, double y, double size, EventManager eventManager) {
         super(x, y, size);
         this.eventManager = eventManager;
     }
@@ -49,8 +50,7 @@ public abstract class Person extends Mob implements Movable {
         update();
     }
 
-    public void update() {
-    }
+    public abstract void update();
 
     public double getSize() {
         return size;

@@ -1,30 +1,13 @@
 package ru.rsreu.tishkovets.events.data.object;
 
-public class PersonData {
-    private final double positionX;
-    private final double positionY;
+public class PersonData extends BaseData {
     private final double prevPositionX;
     private final double prevPositionY;
-    private final double size;
 
     public PersonData(double x, double y, double px, double py, double size) {
-        positionX = x;
-        positionY = y;
+        super(x, y, size);
         prevPositionX = px;
         prevPositionY = py;
-        this.size = size;
-    }
-
-    public double getPositionX() {
-        return positionX;
-    }
-
-    public double getPositionY() {
-        return positionY;
-    }
-
-    public double getSize() {
-        return size;
     }
 
     public double getPrevPositionX() {

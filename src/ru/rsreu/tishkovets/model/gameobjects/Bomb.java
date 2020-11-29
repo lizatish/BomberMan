@@ -3,13 +3,9 @@ package ru.rsreu.tishkovets.model.gameobjects;
 import ru.rsreu.tishkovets.Settings;
 import ru.rsreu.tishkovets.events.EventManager;
 import ru.rsreu.tishkovets.events.EventType;
-import ru.rsreu.tishkovets.events.data.BombEventData;
-import ru.rsreu.tishkovets.events.data.object.StaticObjectData;
-import ru.rsreu.tishkovets.model.GameModel;
-import ru.rsreu.tishkovets.model.GameState;
-
-import java.util.ArrayList;
-import java.util.List;
+import ru.rsreu.tishkovets.events.data.object.BaseData;
+import ru.rsreu.tishkovets.events.data.object.BombEventData;
+//import ru.rsreu.tishkovets.events.data.object.StaticObjectData;
 
 public class Bomb implements Runnable {
     private final double positionX;
@@ -49,8 +45,8 @@ public class Bomb implements Runnable {
         }
     }
 
-    public StaticObjectData createBombData() {
-        return new StaticObjectData(getPositionX(), getPositionY(), getSize());
+    public BaseData createBombData() {
+        return new BaseData(getPositionX(), getPositionY(), getSize());
     }
 
     public double getPositionY() {

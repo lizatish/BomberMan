@@ -1,24 +1,26 @@
 package ru.rsreu.tishkovets.events.data;
 
-import ru.rsreu.tishkovets.events.data.object.StaticObjectData;
+import ru.rsreu.tishkovets.events.data.object.BaseData;
 import ru.rsreu.tishkovets.events.data.object.PersonData;
 
 import java.util.List;
 
-public class InitEventData implements EventData {
-    private final List<StaticObjectData> wallsData;
+public class InitEventData extends EventData {
+    private final List<BaseData> wallsData;
     private final List<PersonData> enemyesData;
-    private final List<StaticObjectData> boxesData;
+    private final List<BaseData> boxesData;
     private final PersonData mainHeroData;
 
-    public InitEventData(PersonData mainHeroData, List<StaticObjectData> wallsData, List<PersonData> enemyes, List<StaticObjectData> boxesData) {
+    public InitEventData(PersonData mainHeroData, List<BaseData> wallsData, List<PersonData> enemyes,
+                         List<BaseData> boxesData) {
+        super();
         this.wallsData = wallsData;
         this.enemyesData = enemyes;
         this.boxesData = boxesData;
         this.mainHeroData = mainHeroData;
     }
 
-    public List<StaticObjectData> getWallsData() {
+    public List<BaseData> getWallsData() {
         return wallsData;
     }
 
@@ -26,7 +28,7 @@ public class InitEventData implements EventData {
         return mainHeroData;
     }
 
-    public List<StaticObjectData> getBoxesData() {
+    public List<BaseData> getBoxesData() {
         return boxesData;
     }
 

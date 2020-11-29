@@ -1,11 +1,12 @@
-package ru.rsreu.tishkovets.events.data;
+package ru.rsreu.tishkovets.events.data.object;
 
+import ru.rsreu.tishkovets.events.data.EventData;
 import ru.rsreu.tishkovets.events.data.object.PersonData;
 
 import java.util.List;
 
 
-public class EnemyEventData implements EventData {
+public class EnemyEventData extends EventData {
     private final PersonData enemyData;
 
     public EnemyEventData(PersonData enemyData) {

@@ -1,17 +1,24 @@
 package ru.rsreu.tishkovets.model;
 
+import javafx.util.Pair;
 import ru.rsreu.tishkovets.Settings;
-import ru.rsreu.tishkovets.events.MovableEventType;
-import ru.rsreu.tishkovets.events.EventType;
-import ru.rsreu.tishkovets.events.data.*;
-import ru.rsreu.tishkovets.events.data.object.StaticObjectData;
 import ru.rsreu.tishkovets.events.EventManager;
+import ru.rsreu.tishkovets.events.EventType;
+import ru.rsreu.tishkovets.events.MovableEventType;
+import ru.rsreu.tishkovets.events.data.InitEventData;
+import ru.rsreu.tishkovets.events.data.object.BaseData;
 import ru.rsreu.tishkovets.events.data.object.PersonData;
-import ru.rsreu.tishkovets.model.gameobjects.*;
+import ru.rsreu.tishkovets.model.gameobjects.Bomb;
+import ru.rsreu.tishkovets.model.gameobjects.Box;
+import ru.rsreu.tishkovets.model.gameobjects.MainHero;
+import ru.rsreu.tishkovets.model.gameobjects.Wall;
+import ru.rsreu.tishkovets.model.gameobjects.enemy.ArtificialIntelligence;
+import ru.rsreu.tishkovets.model.gameobjects.enemy.Enemy;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GameModel implements GameAction {
     private final EventManager eventManager;
@@ -19,7 +26,7 @@ public class GameModel implements GameAction {
 
     private final MainHero mainHero;
     private final List<Wall> walls = new ArrayList<>();
-    private final List<Box> boxes = new ArrayList<>();
+    private final List<Box> boxes = new CopyOnWriteArrayList<>();
     private final List<Bomb> bombs = new ArrayList<>();
     private final List<Enemy> enemyes = new ArrayList<>();
 
@@ -39,14 +46,33 @@ public class GameModel implements GameAction {
         createBoxes();
     }
 
-    public boolean canMove(MovableEventType eventType) {
+    public boolean canMainHeroMove(MovableEventType eventType) {
         Rectangle mainHeroRect = new Rectangle((int) mainHero.getPositionX(), (int) mainHero.getPositionY(),
                 (int) mainHero.getSize(), (int) mainHero.getSize());
+        Rectangle mainHeroPrevRect = new Rectangle((int) mainHero.getPrevPositionX(),
+                (int) mainHero.getPrevPositionY(), (int) mainHero.getSize(), (int) mainHero.getSize());
 
         return checkOutsideWallsCollision(mainHeroRect, mainHero.getSpeed(), eventType) &&
-                checkBoxesCollision(mainHeroRect) && checkInsideWallsCollision(mainHeroRect);
+                checkBoxesCollision(mainHeroRect) && checkInsideWallsCollision(mainHeroRect)
+                && checkBombsCollision(mainHeroRect, mainHeroPrevRect);
     }
 
+    public boolean canEnemyMove(MovableEventType eventType, Enemy enemy) {
+        Rectangle enemyRect = new Rectangle((int) enemy.getPositionX(), (int) enemy.getPositionY(),
+                (int) enemy.getSize(), (int) enemy.getSize());
+
+        return checkOutsideWallsCollision(enemyRect, enemy.getSpeed(), eventType) &&
+                checkInsideWallsCollision(enemyRect) && checkBombsCollision(enemyRect, enemyRect);
+    }
+
+    private void startModel() {
+//        Thread thread = new Thread(mainHero);
+//        thread.start();
+        for (Enemy enemy : enemyes) {
+            Thread thread = new Thread(enemy);
+            thread.start();
+        }
+    }
 
     public void update(EventType eventType) {
         if (eventType == EventType.INIT_UPDATE) {
@@ -92,6 +118,7 @@ public class GameModel implements GameAction {
             gameState = GameState.RUNNING;
             update(EventType.INIT_UPDATE);
         }
+        startModel();
     }
 
     private double getHorizontalStep() {
@@ -103,21 +130,39 @@ public class GameModel implements GameAction {
     }
 
     private void generateEnemyes() {
-        if (Settings.ENEMYES_NUMBER == 1) {
-            enemyes.add(new Enemy(Settings.FIELD_WIDTH - Settings.OBJECT_SIZE,
-                    Settings.FIELD_HEIGHT - Settings.OBJECT_SIZE, Settings.OBJECT_SIZE, eventManager));
-        } else if (Settings.ENEMYES_NUMBER == 2) {
-            enemyes.add(new Enemy(Settings.FIELD_WIDTH - Settings.OBJECT_SIZE,
-                    0, Settings.OBJECT_SIZE, eventManager));
-            enemyes.add(new Enemy(Settings.FIELD_WIDTH - Settings.OBJECT_SIZE,
-                    Settings.FIELD_HEIGHT - Settings.OBJECT_SIZE, Settings.OBJECT_SIZE, eventManager));
-        } else {
-            enemyes.add(new Enemy(Settings.FIELD_WIDTH - Settings.OBJECT_SIZE,
-                    0, Settings.OBJECT_SIZE, eventManager));
-            enemyes.add(new Enemy(Settings.FIELD_WIDTH - Settings.OBJECT_SIZE,
-                    Settings.FIELD_HEIGHT - Settings.OBJECT_SIZE, Settings.OBJECT_SIZE, eventManager));
-            enemyes.add(new Enemy(0, Settings.FIELD_HEIGHT - Settings.OBJECT_SIZE,
-                    Settings.OBJECT_SIZE, eventManager));
+        List<Pair<Double, Double>> enemyCoordinates = new ArrayList<>();
+
+        if (Settings.ENEMYES_NUMBER >= 1) {
+            enemyCoordinates.add(new Pair<>(Settings.FIELD_WIDTH - Settings.OBJECT_SIZE,
+                    Settings.FIELD_HEIGHT - Settings.OBJECT_SIZE));
+            if (Settings.ENEMYES_NUMBER >= 2) {
+                enemyCoordinates.add(new Pair<>(Settings.FIELD_WIDTH - Settings.OBJECT_SIZE, 0.0));
+                if (Settings.ENEMYES_NUMBER >= 3) {
+                    enemyCoordinates.add(new Pair<>(0.0, Settings.FIELD_HEIGHT - Settings.OBJECT_SIZE));
+                }
+            }
+        }
+
+        for (Pair<Double, Double> coordinates : enemyCoordinates) {
+            enemyes.add(new Enemy(coordinates.getKey(), coordinates.getValue(),
+                    Settings.OBJECT_SIZE,
+                    new ArtificialIntelligence(this), eventManager));
+        }
+    }
+
+    public void deleteWallIfEnemyCollision(Enemy enemy) {
+        Rectangle enemyRect = new Rectangle((int) enemy.getPositionX(), (int) enemy.getPositionY(),
+                (int) enemy.getSize(), (int) enemy.getSize());
+        for (Box box : boxes) {
+            int boxPositionX = (int) box.getPositionX();
+            int boxPositionY = (int) box.getPositionY();
+            int boxSize = (int) box.getSize();
+            Rectangle wallRect = new Rectangle(boxPositionX, boxPositionY, boxSize, boxSize);
+            if (enemyRect.intersects(wallRect)) {
+                boxes.remove(box);
+//                eventManager.notify(EventType.BOXES_UPDATE, createBoxesData());
+                return;
+            }
         }
     }
 
@@ -164,42 +209,42 @@ public class GameModel implements GameAction {
         return enemyesData;
     }
 
-    private List<StaticObjectData> createWallsData() {
-        List<StaticObjectData> wallsData = new ArrayList<>();
+    private List<BaseData> createWallsData() {
+        List<BaseData> wallsData = new ArrayList<>();
         for (Wall wall : walls) {
-            StaticObjectData temp = new StaticObjectData(wall.getPositionX(), wall.getPositionY(), wall.getSize());
+            BaseData temp = new BaseData(wall.getPositionX(), wall.getPositionY(), wall.getSize());
             wallsData.add(temp);
         }
         return wallsData;
     }
 
-    private List<StaticObjectData> createBoxesData() {
-        List<StaticObjectData> boxesData = new ArrayList<>();
+    private List<BaseData> createBoxesData() {
+        List<BaseData> boxesData = new ArrayList<>();
         for (Box box : boxes) {
-            StaticObjectData temp = new StaticObjectData(box.getPositionX(), box.getPositionY(), box.getSize());
+            BaseData temp = new BaseData(box.getPositionX(), box.getPositionY(), box.getSize());
             boxesData.add(temp);
         }
         return boxesData;
     }
 
-    private InitEventData createInitData() {
+    public InitEventData createInitData() {
         return new InitEventData(mainHero.createMainHeroData(), createWallsData(),
                 createEnemyesData(), createBoxesData());
     }
 
-    private boolean checkOutsideWallsCollision(Rectangle mainHeroRect, double mainHeroSpeed, MovableEventType eventType) {
+    private boolean checkOutsideWallsCollision(Rectangle person, double speed, MovableEventType eventType) {
         if (eventType == MovableEventType.UP) {
-            mainHeroRect.y -= mainHeroSpeed;
-            return mainHeroRect.y >= 0;
+            person.y -= speed;
+            return person.y >= 0;
         } else if (eventType == MovableEventType.DOWN) {
-            mainHeroRect.y += mainHeroSpeed;
-            return !(mainHeroRect.y + mainHeroRect.height > Settings.FIELD_HEIGHT);
+            person.y += speed;
+            return !(person.y + person.height > Settings.FIELD_HEIGHT);
         } else if (eventType == MovableEventType.LEFT) {
-            mainHeroRect.x -= mainHeroSpeed;
-            return mainHeroRect.x >= 0;
+            person.x -= speed;
+            return person.x >= 0;
         } else if (eventType == MovableEventType.RIGHT) {
-            mainHeroRect.x += mainHeroSpeed;
-            return !(mainHeroRect.x + mainHeroRect.height > Settings.FIELD_WIDTH);
+            person.x += speed;
+            return !(person.x + person.height > Settings.FIELD_WIDTH);
         }
         return true;
     }
@@ -218,28 +263,32 @@ public class GameModel implements GameAction {
         return true;
     }
 
-    private boolean checkBombsCollision(Rectangle mainHeroRect) {
+    private boolean checkBombsCollision(Rectangle mainHeroRect, Rectangle mainHeroPrevRect) {
         for (Bomb bomb : bombs) {
             int boxPositionX = (int) bomb.getPositionX();
             int boxPositionY = (int) bomb.getPositionY();
             int boxSize = (int) bomb.getSize();
-            Rectangle wallRect = new Rectangle(boxPositionX, boxPositionY, boxSize, boxSize);
+            Rectangle boxRect = new Rectangle(boxPositionX, boxPositionY, boxSize, boxSize);
 
-            if (mainHeroRect.intersects(wallRect)) {
+            if (mainHeroPrevRect.intersects(boxRect)) {
+                continue;
+            }
+
+            if (mainHeroRect.intersects(boxRect)) {
                 return false;
             }
         }
         return true;
     }
 
-    private boolean checkBoxesCollision(Rectangle mainHeroRect) {
+    public boolean checkBoxesCollision(Rectangle personRect) {
         for (Box box : boxes) {
             int boxPositionX = (int) box.getPositionX();
             int boxPositionY = (int) box.getPositionY();
             int boxSize = (int) box.getSize();
             Rectangle wallRect = new Rectangle(boxPositionX, boxPositionY, boxSize, boxSize);
 
-            if (mainHeroRect.intersects(wallRect)) {
+            if (personRect.intersects(wallRect)) {
                 return false;
             }
         }
@@ -258,4 +307,19 @@ public class GameModel implements GameAction {
         return gameState;
     }
 
+    public List<Wall> getWalls() {
+        return walls;
+    }
+
+    public List<Box> getBoxes() {
+        return boxes;
+    }
+
+    public List<Bomb> getBombs() {
+        return bombs;
+    }
+
+    public List<Enemy> getEnemyes() {
+        return enemyes;
+    }
 }

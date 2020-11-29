@@ -1,11 +1,12 @@
 package ru.rsreu.tishkovets.events.data.object;
 
-public class StaticObjectData {
+
+public class BaseData {
     private final double positionX;
     private final double positionY;
     private final double size;
 
-    public StaticObjectData(double x, double y, double size) {
+    public BaseData(double x, double y, double size) {
         positionX = x;
         positionY = y;
         this.size = size;
