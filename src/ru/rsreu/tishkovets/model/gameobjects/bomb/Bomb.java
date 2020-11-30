@@ -1,10 +1,11 @@
-package ru.rsreu.tishkovets.model.gameobjects;
+package ru.rsreu.tishkovets.model.gameobjects.bomb;
 
 import ru.rsreu.tishkovets.Settings;
 import ru.rsreu.tishkovets.events.EventManager;
 import ru.rsreu.tishkovets.events.EventType;
 import ru.rsreu.tishkovets.events.data.object.BaseData;
 import ru.rsreu.tishkovets.events.data.BaseEventData;
+import ru.rsreu.tishkovets.model.GameModel;
 
 public class Bomb implements Runnable {
     private final double positionX;
@@ -13,22 +14,25 @@ public class Bomb implements Runnable {
 
     private final EventManager eventManager;
     private boolean isAlive;
+    private final GameModel model;
 
-    public Bomb(double x, double y, double size, EventManager eventManager) {
+    public Bomb(double x, double y, double size, EventManager eventManager, GameModel model) {
         this.positionX = x;
         this.positionY = y;
         this.size = size;
         this.eventManager = eventManager;
+        this.model = model;
     }
 
     public void explode() {
-
+        model.clearBomb();
     }
 
     private void boom() {
         System.out.println("Booom");
         isAlive = false;
         eventManager.notify(EventType.BOMB_UPDATE, new BaseEventData(createBombData()));
+        explode();
     }
 
     @Override
@@ -58,5 +62,9 @@ public class Bomb implements Runnable {
 
     public double getSize() {
         return size;
+    }
+
+    public boolean isAlive() {
+        return isAlive;
     }
 }

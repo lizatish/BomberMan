@@ -6,18 +6,21 @@ import ru.rsreu.tishkovets.events.EventManager;
 import ru.rsreu.tishkovets.events.EventType;
 import ru.rsreu.tishkovets.events.MovableEventType;
 import ru.rsreu.tishkovets.events.data.BaseEventData;
+import ru.rsreu.tishkovets.events.data.ExplosionsEventData;
 import ru.rsreu.tishkovets.events.data.InitEventData;
 import ru.rsreu.tishkovets.events.data.object.BaseData;
 import ru.rsreu.tishkovets.events.data.object.PersonData;
-import ru.rsreu.tishkovets.model.gameobjects.Bomb;
+import ru.rsreu.tishkovets.model.gameobjects.bomb.Bomb;
 import ru.rsreu.tishkovets.model.gameobjects.Box;
 import ru.rsreu.tishkovets.model.gameobjects.MainHero;
 import ru.rsreu.tishkovets.model.gameobjects.Wall;
+import ru.rsreu.tishkovets.model.gameobjects.bomb.Explosion;
 import ru.rsreu.tishkovets.model.gameobjects.enemy.ArtificialIntelligence;
 import ru.rsreu.tishkovets.model.gameobjects.enemy.Enemy;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -30,6 +33,7 @@ public class GameModel implements GameAction {
     private final List<Box> boxes = new CopyOnWriteArrayList<>();
     private final List<Bomb> bombs = new ArrayList<>();
     private final List<Enemy> enemyes = new ArrayList<>();
+    private final List<Explosion> explosions = new CopyOnWriteArrayList<>();
 
     private int bombCount;
 
@@ -89,12 +93,79 @@ public class GameModel implements GameAction {
         double bombPositionY = mainHero.getPositionY();
         double bombSize = mainHero.getSize();
 
-        Bomb bomb = new Bomb(bombPositionX, bombPositionY, bombSize, eventManager);
+        Bomb bomb = new Bomb(bombPositionX, bombPositionY, bombSize, eventManager, this);
         bombs.add(bomb);
         Thread thread = new Thread(bomb);
         thread.start();
         //        }
 
+    }
+
+    public void clearBomb() {
+
+        for (Bomb bomb : bombs)
+            if (!bomb.isAlive()) {
+                explosion(bomb);
+                bombCount++;
+            }
+    }
+
+    private void explosion(Bomb bomb) {
+        int bombPositionX = (int) bomb.getPositionX();
+        int bombPositionY = (int) bomb.getPositionY();
+        int bombSize = (int) bomb.getSize();
+
+        for (double i = Settings.OBJECT_SIZE; i <= Settings.EXPLOSION_STRANGE * Settings.OBJECT_SIZE; i += Settings.OBJECT_SIZE) {
+            Rectangle explosionRect = new Rectangle((int) (bombPositionX + i), bombPositionY, bombSize, bombSize);
+            if (!(checkInsideWallsCollision(explosionRect))) {
+                createExplosion(bombPositionX + i, bombPositionY);
+            } else {
+                break;
+            }
+        }
+        for (double i = Settings.OBJECT_SIZE; i <= Settings.EXPLOSION_STRANGE * Settings.OBJECT_SIZE; i += Settings.OBJECT_SIZE) {
+            Rectangle explosionRect = new Rectangle(bombPositionX, (int) (bombPositionY + i), bombSize, bombSize);
+            if (!(checkInsideWallsCollision(explosionRect))) {
+                createExplosion(bombPositionX, bombPositionY + i);
+            } else {
+                break;
+            }
+        }
+        for (double i = Settings.OBJECT_SIZE; i <= Settings.EXPLOSION_STRANGE * Settings.OBJECT_SIZE; i += Settings.OBJECT_SIZE) {
+            Rectangle explosionRect = new Rectangle((int) (bombPositionX - i), bombPositionY, bombSize, bombSize);
+            if (!(checkInsideWallsCollision(explosionRect))) {
+                createExplosion(bombPositionX - i, bombPositionY);
+            } else {
+                break;
+            }
+        }
+        for (double i = Settings.OBJECT_SIZE; i <= Settings.EXPLOSION_STRANGE * Settings.OBJECT_SIZE; i += Settings.OBJECT_SIZE) {
+            Rectangle explosionRect = new Rectangle(bombPositionX, (int) (bombPositionY - i), bombSize, bombSize);
+            if (!(checkInsideWallsCollision(explosionRect))) {
+                createExplosion(bombPositionX, bombPositionY - i);
+            } else {
+                break;
+            }
+        }
+
+        createExplosion(bombPositionX, bombPositionY);
+        eventManager.notify(EventType.EXPLOSION_UPDATE, new ExplosionsEventData(createExplosionData()));
+    }
+
+    private List<BaseData> createExplosionData() {
+        List<BaseData> explosionData = new ArrayList<>();
+        for (Explosion explosion : explosions) {
+            BaseData temp = new BaseData(explosion.getPositionX(), explosion.getPositionY(), explosion.getSize());
+            explosionData.add(temp);
+        }
+        return explosionData;
+    }
+
+    private void createExplosion(double x, double y) {
+        Explosion explosion = new Explosion(x, y, Settings.OBJECT_SIZE, this);
+        explosions.add(explosion);
+        Thread thread = new Thread(explosion);
+        thread.start();
     }
 
     @Override

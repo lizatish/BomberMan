@@ -9,4 +9,8 @@ public class Settings {
     public static final double BOXES_NUMBER = 120;
     public static final double ENEMYES_NUMBER = 3;
     public static final double BOMB_ALIVE_TIME = 3000;
+
+    public static final double EXPLOSION_TIME = 2000;
+    public static final double EXPLOSION_STRANGE = 1;
+
 }
