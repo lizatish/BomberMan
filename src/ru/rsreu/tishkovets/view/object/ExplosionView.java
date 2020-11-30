@@ -6,7 +6,6 @@ import ru.rsreu.tishkovets.Settings;
 import ru.rsreu.tishkovets.events.data.BaseEventData;
 import ru.rsreu.tishkovets.events.data.EventData;
 import ru.rsreu.tishkovets.events.data.ExplosionsEventData;
-import ru.rsreu.tishkovets.events.data.InitEventData;
 import ru.rsreu.tishkovets.events.data.object.BaseData;
 
 import java.util.List;
@@ -22,13 +21,15 @@ public class ExplosionView extends BaseView {
     public void setImage(String filename) {
         image = new Image(filename, Settings.OBJECT_SIZE, Settings.OBJECT_SIZE, false, false);
     }
+
     @Override
     public void render(EventData data) {
         ExplosionsEventData renderData = (ExplosionsEventData) data;
         List<BaseData> explosions = renderData.getExplosionsData();
         for (BaseData explosion : explosions) {
+            gc.clearRect(explosion.getPositionX(), explosion.getPositionY(),
+                    explosion.getSize(), explosion.getSize());
             gc.drawImage(image, explosion.getPositionX(), explosion.getPositionY());
-            System.out.println("Explosion");
         }
     }
 }

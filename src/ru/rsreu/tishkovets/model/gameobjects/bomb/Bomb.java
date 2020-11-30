@@ -25,13 +25,13 @@ public class Bomb implements Runnable {
     }
 
     public void explode() {
-        model.clearBomb();
+        model.explodeBomb(this);
     }
 
     private void boom() {
         System.out.println("Booom");
         isAlive = false;
-        eventManager.notify(EventType.BOMB_UPDATE, new BaseEventData(createBombData()));
+//        eventManager.notify(EventType.EXPLODE_BOMB, new BaseEventData(createBombData()));
         explode();
     }
 
@@ -39,12 +39,19 @@ public class Bomb implements Runnable {
     public void run() {
         long startTime = System.currentTimeMillis();
         isAlive = true;
+
 //        while (isAlive && GameState.RUNNING.equals(model.getGameState())) {
         while (isAlive) {
+            try {
+                Thread.sleep(50);
+                eventManager.notify(EventType.PLACE_BOMB, new BaseEventData(createBombData()));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
             if (System.currentTimeMillis() - startTime > Settings.BOMB_ALIVE_TIME) {
                 boom();
             }
-//            eventManager.notify(EventType.BOMB_UPDATE, new BombEventData(createBombData()));
         }
     }
 

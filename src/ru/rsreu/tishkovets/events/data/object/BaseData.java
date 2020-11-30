@@ -12,6 +12,7 @@ public class BaseData {
         this.size = size;
     }
 
+
     public double getPositionX() {
         return positionX;
     }

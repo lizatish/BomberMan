@@ -12,14 +12,16 @@ public enum EventType {
     ENEMY_UPDATE {
 
     },
-    BOMB_UPDATE {
+    PLACE_BOMB {
 
     },
     EXPLOSION_UPDATE {
 
-    }, BOX_DELETE {
+    },
+    BOX_DELETE {
 
     };
+
 
     public void subscribe(EventListener listener) {
         if (listeners == null) {

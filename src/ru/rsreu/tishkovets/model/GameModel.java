@@ -20,7 +20,6 @@ import ru.rsreu.tishkovets.model.gameobjects.enemy.Enemy;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -101,23 +100,23 @@ public class GameModel implements GameAction {
 
     }
 
-    public void clearBomb() {
-
-        for (Bomb bomb : bombs)
-            if (!bomb.isAlive()) {
-                explosion(bomb);
-                bombCount++;
-            }
+    public void explodeBomb(Bomb bomb) {
+        explosion(bomb);
+        bombs.remove(bomb);
     }
 
-    private void explosion(Bomb bomb) {
+    public void removeExplosion(Explosion explosion) {
+        explosions.remove(explosion);
+    }
+
+    private synchronized void explosion(Bomb bomb) {
         int bombPositionX = (int) bomb.getPositionX();
         int bombPositionY = (int) bomb.getPositionY();
         int bombSize = (int) bomb.getSize();
 
         for (double i = Settings.OBJECT_SIZE; i <= Settings.EXPLOSION_STRANGE * Settings.OBJECT_SIZE; i += Settings.OBJECT_SIZE) {
             Rectangle explosionRect = new Rectangle((int) (bombPositionX + i), bombPositionY, bombSize, bombSize);
-            if (!(checkInsideWallsCollision(explosionRect))) {
+            if (checkInsideWallsCollision(explosionRect)) {
                 createExplosion(bombPositionX + i, bombPositionY);
             } else {
                 break;
@@ -125,7 +124,7 @@ public class GameModel implements GameAction {
         }
         for (double i = Settings.OBJECT_SIZE; i <= Settings.EXPLOSION_STRANGE * Settings.OBJECT_SIZE; i += Settings.OBJECT_SIZE) {
             Rectangle explosionRect = new Rectangle(bombPositionX, (int) (bombPositionY + i), bombSize, bombSize);
-            if (!(checkInsideWallsCollision(explosionRect))) {
+            if (checkInsideWallsCollision(explosionRect)) {
                 createExplosion(bombPositionX, bombPositionY + i);
             } else {
                 break;
@@ -133,7 +132,7 @@ public class GameModel implements GameAction {
         }
         for (double i = Settings.OBJECT_SIZE; i <= Settings.EXPLOSION_STRANGE * Settings.OBJECT_SIZE; i += Settings.OBJECT_SIZE) {
             Rectangle explosionRect = new Rectangle((int) (bombPositionX - i), bombPositionY, bombSize, bombSize);
-            if (!(checkInsideWallsCollision(explosionRect))) {
+            if (checkInsideWallsCollision(explosionRect)) {
                 createExplosion(bombPositionX - i, bombPositionY);
             } else {
                 break;
@@ -141,7 +140,7 @@ public class GameModel implements GameAction {
         }
         for (double i = Settings.OBJECT_SIZE; i <= Settings.EXPLOSION_STRANGE * Settings.OBJECT_SIZE; i += Settings.OBJECT_SIZE) {
             Rectangle explosionRect = new Rectangle(bombPositionX, (int) (bombPositionY - i), bombSize, bombSize);
-            if (!(checkInsideWallsCollision(explosionRect))) {
+            if (checkInsideWallsCollision(explosionRect)) {
                 createExplosion(bombPositionX, bombPositionY - i);
             } else {
                 break;
@@ -150,6 +149,7 @@ public class GameModel implements GameAction {
 
         createExplosion(bombPositionX, bombPositionY);
         eventManager.notify(EventType.EXPLOSION_UPDATE, new ExplosionsEventData(createExplosionData()));
+        System.out.println(explosions.size());
     }
 
     private List<BaseData> createExplosionData() {
@@ -162,7 +162,9 @@ public class GameModel implements GameAction {
     }
 
     private void createExplosion(double x, double y) {
-        Explosion explosion = new Explosion(x, y, Settings.OBJECT_SIZE, this);
+        Explosion explosion = new Explosion(x, y, Settings.OBJECT_SIZE, eventManager, this);
+        if (explosions.contains(explosion))
+            return;
         explosions.add(explosion);
         Thread thread = new Thread(explosion);
         thread.start();
@@ -217,7 +219,7 @@ public class GameModel implements GameAction {
 
         for (Pair<Double, Double> coordinates : enemyCoordinates) {
             enemyes.add(new Enemy(coordinates.getKey(), coordinates.getValue(),
-                    Settings.OBJECT_SIZE,
+                    Settings.OBJECT_SIZE - 4,
                     new ArtificialIntelligence(this), eventManager));
         }
     }
@@ -232,8 +234,6 @@ public class GameModel implements GameAction {
             Rectangle wallRect = new Rectangle(boxPositionX, boxPositionY, boxSize, boxSize);
             if (enemyRect.intersects(wallRect)) {
                 boxes.remove(box);
-                System.out.println(boxes.size());
-
                 eventManager.notify(EventType.BOX_DELETE, new BaseEventData(box.createBoxData()));
                 return;
             }

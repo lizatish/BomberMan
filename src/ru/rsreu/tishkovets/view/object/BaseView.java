@@ -19,7 +19,7 @@ public abstract class BaseView implements EventListener {
         image = new Image(filename, size, size, false, false);
     }
 
-    public void render(EventData data) {
+     public void render(EventData data) {
     }
 
     @Override
