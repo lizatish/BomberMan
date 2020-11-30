@@ -5,13 +5,13 @@ import ru.rsreu.tishkovets.events.EventType;
 import ru.rsreu.tishkovets.events.MovableEventType;
 import ru.rsreu.tishkovets.events.data.PersonEventData;
 import ru.rsreu.tishkovets.events.data.object.PersonData;
+import ru.rsreu.tishkovets.model.GameModel;
+import ru.rsreu.tishkovets.model.GameState;
 import ru.rsreu.tishkovets.model.gameobjects.Person;
 
 public class Enemy extends Person implements Runnable {
 
     private final ArtificialIntelligence aI;
-
-    private boolean isMoving;
     private MovableEventType moveDirection;
     private boolean isAlive = true;
 
@@ -21,19 +21,11 @@ public class Enemy extends Person implements Runnable {
         initAi();
     }
 
-    private void initAi() {
-        if (aI != null) {
-            aI.setEnemy(this);
-        }
-    }
-
     @Override
     public void run() {
-        while (this.isAlive) {
-//            if (GameState.RUNNING.equals(Game.getGameState())) {
-            calculateMove();
-//            }
+        while (this.isAlive && GameState.RUNNING.equals(GameModel.getGameState())) {
             try {
+                calculateMove();
                 Thread.sleep(8);
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -50,9 +42,8 @@ public class Enemy extends Person implements Runnable {
         return new PersonData(getPositionX(), getPositionY(), getPrevPositionX(), getPrevPositionY(), getSize());
     }
 
-    public void calculateMove() {
+    private void calculateMove() {
         moveDirection = aI.calculateDirection();
-//        this.isMoving = true;
 
         if (moveDirection == MovableEventType.UP) {
             moveUp();
@@ -62,6 +53,12 @@ public class Enemy extends Person implements Runnable {
             moveLeft();
         } else if (moveDirection == MovableEventType.RIGHT) {
             moveRight();
+        }
+    }
+
+    private void initAi() {
+        if (aI != null) {
+            aI.setEnemy(this);
         }
     }
 }

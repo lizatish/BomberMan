@@ -14,7 +14,7 @@ import java.util.List;
 public class ExplosionView extends BaseView {
     public ExplosionView(GraphicsContext gcInit) {
         super(gcInit);
-        imageFilename = "file:/home/liza/IdeaProjects/MVC_/src/ru/rsreu/tishkovets/view/resources/explosion.png";
+        imageFilename = "file:src/ru/rsreu/tishkovets/view/resources/explosion.png";
         setImage(imageFilename);
     }
 

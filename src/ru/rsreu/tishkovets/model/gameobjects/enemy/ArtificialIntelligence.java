@@ -20,73 +20,38 @@ public class ArtificialIntelligence {
         double dy = enemy.getPositionY() - model.getMainHero().getPositionY();
         if (Math.abs(dx) > Math.abs(dy)) {
             if (dx < 0) {
-                moveDirectionType = MovableEventType.RIGHT;
-                if (!model.canEnemyMove(moveDirectionType, enemy)) {
-                    if (dy < 0) {
-                        moveDirectionType = MovableEventType.DOWN;
-                        if (!model.canEnemyMove(moveDirectionType, enemy)) {
-                            moveDirectionType = MovableEventType.UP;
-                        }
-                    } else {
-                        moveDirectionType = MovableEventType.UP;
-                        if (!model.canEnemyMove(moveDirectionType, enemy)) {
-                            moveDirectionType = MovableEventType.DOWN;
-                        }
-                    }
-                }
+                moveDirectionType = getMovableEventType(dy, MovableEventType.RIGHT, MovableEventType.DOWN, MovableEventType.UP);
             } else {
-                moveDirectionType = MovableEventType.LEFT;
-                if (!model.canEnemyMove(moveDirectionType, enemy)) {
-                    if (dy < 0) {
-                        moveDirectionType = MovableEventType.DOWN;
-                        if (!model.canEnemyMove(moveDirectionType, enemy)) {
-                            moveDirectionType = MovableEventType.UP;
-                        }
-                    } else {
-                        moveDirectionType = MovableEventType.UP;
-                        if (!model.canEnemyMove(moveDirectionType, enemy)) {
-                            moveDirectionType = MovableEventType.DOWN;
-                        }
-                    }
-                }
+                moveDirectionType = getMovableEventType(dy, MovableEventType.LEFT, MovableEventType.DOWN, MovableEventType.UP);
             }
         } else {
             if (dy < 0) {
-                moveDirectionType = MovableEventType.DOWN;
-                if (!model.canEnemyMove(moveDirectionType, enemy)) {
-                    if (dx < 0) {
-                        moveDirectionType = MovableEventType.RIGHT;
-                        if (!model.canEnemyMove(moveDirectionType, enemy)) {
-                            moveDirectionType = MovableEventType.LEFT;
-                        }
-                    } else {
-                        moveDirectionType = MovableEventType.LEFT;
-                        if (!model.canEnemyMove(moveDirectionType, enemy)) {
-                            moveDirectionType = MovableEventType.RIGHT;
-                        }
-                    }
-                }
+                moveDirectionType = getMovableEventType(dx, MovableEventType.DOWN, MovableEventType.RIGHT, MovableEventType.LEFT);
             } else {
                 if (dy > 0) {
-                    moveDirectionType = MovableEventType.UP;
-                    if (!model.canEnemyMove(moveDirectionType, enemy)) {
-                        if (dx < 0) {
-                            moveDirectionType = MovableEventType.RIGHT;
-                            if (!model.canEnemyMove(moveDirectionType, enemy)) {
-                                moveDirectionType = MovableEventType.LEFT;
-                            }
-                        } else {
-                            moveDirectionType = MovableEventType.LEFT;
-                            if (!model.canEnemyMove(moveDirectionType, enemy)) {
-                                moveDirectionType = MovableEventType.RIGHT;
-                            }
-                        }
-                    }
+                    moveDirectionType = getMovableEventType(dx, MovableEventType.UP, MovableEventType.RIGHT, MovableEventType.LEFT);
                 }
             }
         }
+        model.removeBoxesInCollision(enemy);
+        return moveDirectionType;
+    }
 
-        model.deleteBoxesInCollision(enemy);
+    private MovableEventType getMovableEventType(double direction, MovableEventType original, MovableEventType newDirectionA, MovableEventType newDirectionB) {
+        MovableEventType moveDirectionType = original;
+        if (!model.canEnemyMove(moveDirectionType, enemy)) {
+            if (direction < 0) {
+                moveDirectionType = newDirectionA;
+                if (!model.canEnemyMove(moveDirectionType, enemy)) {
+                    moveDirectionType = newDirectionB;
+                }
+            } else {
+                moveDirectionType = newDirectionB;
+                if (!model.canEnemyMove(moveDirectionType, enemy)) {
+                    moveDirectionType = newDirectionA;
+                }
+            }
+        }
         return moveDirectionType;
     }
 

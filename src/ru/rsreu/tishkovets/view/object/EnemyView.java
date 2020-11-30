@@ -12,7 +12,7 @@ import java.util.List;
 public class EnemyView extends BaseView {
     public EnemyView(GraphicsContext gcInit) {
         super(gcInit);
-        imageFilename = "file:/home/liza/IdeaProjects/MVC_/src/ru/rsreu/tishkovets/view/resources/enemy.png";
+        imageFilename = "file:src/ru/rsreu/tishkovets/view/resources/enemy.png";
     }
 
     @Override

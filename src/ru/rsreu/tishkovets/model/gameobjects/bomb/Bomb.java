@@ -6,6 +6,7 @@ import ru.rsreu.tishkovets.events.EventType;
 import ru.rsreu.tishkovets.events.data.object.BaseData;
 import ru.rsreu.tishkovets.events.data.BaseEventData;
 import ru.rsreu.tishkovets.model.GameModel;
+import ru.rsreu.tishkovets.model.GameState;
 import ru.rsreu.tishkovets.model.gameobjects.BaseObject;
 
 public class Bomb extends BaseObject implements Runnable {
@@ -25,8 +26,7 @@ public class Bomb extends BaseObject implements Runnable {
         long startTime = System.currentTimeMillis();
         isAlive = true;
 
-//        while (isAlive && GameState.RUNNING.equals(model.getGameState())) {
-        while (isAlive) {
+        while (isAlive && GameState.RUNNING.equals(GameModel.getGameState())) {
             try {
                 Thread.sleep(50);
                 eventManager.notify(EventType.PLACE_BOMB, new BaseEventData(createBombData()));
@@ -40,7 +40,6 @@ public class Bomb extends BaseObject implements Runnable {
     }
 
     private void boom() {
-        System.out.println("Booom");
         isAlive = false;
         model.explodeBomb(this);
     }

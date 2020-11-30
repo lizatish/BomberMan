@@ -1,5 +1,10 @@
 package ru.rsreu.tishkovets.model;
 
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import javafx.util.Pair;
 import ru.rsreu.tishkovets.Settings;
 import ru.rsreu.tishkovets.events.EventManager;
@@ -11,22 +16,18 @@ import ru.rsreu.tishkovets.events.data.InitEventData;
 import ru.rsreu.tishkovets.events.data.object.BaseData;
 import ru.rsreu.tishkovets.events.data.object.PersonData;
 import ru.rsreu.tishkovets.model.gameobjects.BaseObject;
-import ru.rsreu.tishkovets.model.gameobjects.bomb.Bomb;
 import ru.rsreu.tishkovets.model.gameobjects.Box;
 import ru.rsreu.tishkovets.model.gameobjects.MainHero;
 import ru.rsreu.tishkovets.model.gameobjects.Wall;
+import ru.rsreu.tishkovets.model.gameobjects.bomb.Bomb;
 import ru.rsreu.tishkovets.model.gameobjects.bomb.Explosion;
 import ru.rsreu.tishkovets.model.gameobjects.enemy.ArtificialIntelligence;
 import ru.rsreu.tishkovets.model.gameobjects.enemy.Enemy;
 
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 public class GameModel implements GameAction {
+
     private final EventManager eventManager;
-    private volatile static GameState gameState = GameState.NEW;
+    private static GameState gameState = GameState.NEW;
 
     private final MainHero mainHero;
     private final List<Wall> walls = new ArrayList<>();
@@ -44,6 +45,30 @@ public class GameModel implements GameAction {
 
         generateEnemyes();
         generateWallsAndBoxes();
+    }
+
+    @Override
+    public boolean isPaused() {
+        return GameState.PAUSED.equals(gameState);
+    }
+
+    @Override
+    public void start() {
+        if (GameState.NEW == gameState) {
+            gameState = GameState.RUNNING;
+            update(EventType.INIT_UPDATE);
+        }
+        startModel();
+    }
+
+    @Override
+    public void pause(boolean isPaused) {
+        if (isPaused) {
+            gameState = GameState.PAUSED;
+        } else {
+            gameState = GameState.RUNNING;
+            update(EventType.INIT_UPDATE);
+        }
     }
 
     public void generateWallsAndBoxes() {
@@ -82,8 +107,7 @@ public class GameModel implements GameAction {
         Rectangle enemyRect = new Rectangle((int) enemy.getPositionX(), (int) enemy.getPositionY(),
                 (int) enemy.getSize(), (int) enemy.getSize());
 
-        return checkOutsideWallsCollision(enemyRect, enemy.getSpeed(), eventType) &&
-                checkInsideWallsCollision(enemyRect) && checkBombsCollision(enemyRect, enemyRect);
+        return checkOutsideWallsCollision(enemyRect, enemy.getSpeed(), eventType) && checkInsideWallsCollision(enemyRect) && checkBombsCollision(enemyRect, enemyRect);
     }
 
     public void update(EventType eventType) {
@@ -92,18 +116,16 @@ public class GameModel implements GameAction {
         }
     }
 
-    public void deleteBoxesInCollision(BaseObject object) {
-        Rectangle enemyRect = new Rectangle((int) object.getPositionX(), (int) object.getPositionY(),
-                (int) object.getSize(), (int) object.getSize());
+    public synchronized void removeBoxesInCollision(BaseObject object) {
+        Rectangle objectRect = new Rectangle((int) object.getPositionX(), (int) object.getPositionY(), (int) object.getSize(), (int) object.getSize());
         for (Box box : boxes) {
             int boxPositionX = (int) box.getPositionX();
             int boxPositionY = (int) box.getPositionY();
             int boxSize = (int) box.getSize();
             Rectangle wallRect = new Rectangle(boxPositionX, boxPositionY, boxSize, boxSize);
-            if (enemyRect.intersects(wallRect)) {
+            if (objectRect.intersects(wallRect)) {
                 boxes.remove(box);
                 eventManager.notify(EventType.BOX_DELETE, new BaseEventData(box.createBoxData()));
-                return;
             }
         }
     }
@@ -115,9 +137,13 @@ public class GameModel implements GameAction {
     }
 
     public synchronized void removeExplosion(Explosion explosion) {
-        explosions.remove(explosion);
         eventManager.notify(EventType.EXPLOSION_REMOVE, new ExplosionsEventData(createExplosionData(true)));
-        System.out.println(explosions.size());
+        explosions.remove(explosion);
+    }
+
+    public InitEventData createInitData() {
+        return new InitEventData(mainHero.createMainHeroData(), createWallsData(),
+                createEnemyesData(), createBoxesData());
     }
 
     private synchronized void explosion(Bomb bomb) {
@@ -126,55 +152,33 @@ public class GameModel implements GameAction {
         int bombSize = (int) bomb.getSize();
 
         for (double i = Settings.OBJECT_SIZE; i <= Settings.EXPLOSION_STRANGE * Settings.OBJECT_SIZE; i += Settings.OBJECT_SIZE) {
-            Rectangle explosionRect = new Rectangle((int) (bombPositionX + i), bombPositionY, bombSize, bombSize);
-            if (checkInsideWallsCollision(explosionRect)) {
-                createExplosion(bombPositionX + i, bombPositionY);
-            } else {
-                break;
-            }
-        }
-        for (double i = Settings.OBJECT_SIZE; i <= Settings.EXPLOSION_STRANGE * Settings.OBJECT_SIZE; i += Settings.OBJECT_SIZE) {
-            Rectangle explosionRect = new Rectangle(bombPositionX, (int) (bombPositionY + i), bombSize, bombSize);
-            if (checkInsideWallsCollision(explosionRect)) {
-                createExplosion(bombPositionX, bombPositionY + i);
-            } else {
-                break;
-            }
-        }
-        for (double i = Settings.OBJECT_SIZE; i <= Settings.EXPLOSION_STRANGE * Settings.OBJECT_SIZE; i += Settings.OBJECT_SIZE) {
-            Rectangle explosionRect = new Rectangle((int) (bombPositionX - i), bombPositionY, bombSize, bombSize);
-            if (checkInsideWallsCollision(explosionRect)) {
-                createExplosion(bombPositionX - i, bombPositionY);
-            } else {
-                break;
-            }
-        }
-        for (double i = Settings.OBJECT_SIZE; i <= Settings.EXPLOSION_STRANGE * Settings.OBJECT_SIZE; i += Settings.OBJECT_SIZE) {
-            Rectangle explosionRect = new Rectangle(bombPositionX, (int) (bombPositionY - i), bombSize, bombSize);
-            if (checkInsideWallsCollision(explosionRect)) {
-                createExplosion(bombPositionX, bombPositionY - i);
-            } else {
-                break;
-            }
+            createExplosionBeam(bombPositionX + i, bombPositionY, bombSize);
+            createExplosionBeam(bombPositionX, bombPositionY + i, bombSize);
+            createExplosionBeam(bombPositionX - i, bombPositionY, bombSize);
+            createExplosionBeam(bombPositionX, bombPositionY - i, bombSize);
         }
 
         createExplosion(bombPositionX, bombPositionY);
         eventManager.notify(EventType.EXPLOSION_UPDATE, new ExplosionsEventData(createExplosionData(false)));
     }
 
+    private void createExplosionBeam(double explosionPositionX, double explosionPositionY, int bombSize) {
+        Rectangle explosionRect = new Rectangle((int) explosionPositionX, (int) explosionPositionY, bombSize, bombSize);
+        if (checkInsideWallsCollision(explosionRect)) {
+            createExplosion(explosionPositionX, explosionPositionY);
+        }
+    }
+
     private synchronized List<BaseData> createExplosionData(boolean isDelete) {
         List<BaseData> explosionData = new ArrayList<>();
         for (Explosion explosion : explosions) {
-            BaseData temp = new BaseData(explosion.getPositionX(),
-                    explosion.getPositionY(), explosion.getSize(), isDelete);
+            BaseData temp = new BaseData(explosion.getPositionX(), explosion.getPositionY(), explosion.getSize(), isDelete);
             explosionData.add(temp);
         }
         return explosionData;
     }
 
     private void startModel() {
-//        Thread thread = new Thread(mainHero);
-//        thread.start();
         for (Enemy enemy : enemyes) {
             Thread thread = new Thread(enemy);
             thread.start();
@@ -188,31 +192,6 @@ public class GameModel implements GameAction {
         explosions.add(explosion);
         Thread thread = new Thread(explosion);
         thread.start();
-    }
-
-    @Override
-    public void pause(boolean isPaused) {
-        if (isPaused) {
-            gameState = GameState.PAUSED;
-        } else {
-            gameState = GameState.RUNNING;
-            update(EventType.INIT_UPDATE);
-        }
-//        update(EventType.MODEL_UPDATE);
-    }
-
-    @Override
-    public boolean isPaused() {
-        return GameState.PAUSED.equals(gameState);
-    }
-
-    @Override
-    public void start() {
-        if (GameState.NEW == gameState) {
-            gameState = GameState.RUNNING;
-            update(EventType.INIT_UPDATE);
-        }
-        startModel();
     }
 
     private double getHorizontalStep() {
@@ -264,16 +243,16 @@ public class GameModel implements GameAction {
             y -= y % Settings.OBJECT_SIZE;
             if (x < 3 * Settings.OBJECT_SIZE && y < 3 * Settings.OBJECT_SIZE) {
                 continue;
-            } else if (x > Settings.FIELD_WIDTH - 3 * Settings.OBJECT_SIZE
-                    && y > Settings.FIELD_HEIGHT - 3 * Settings.OBJECT_SIZE) {
+            } else if (x > Settings.FIELD_WIDTH - 3 * Settings.OBJECT_SIZE && y > Settings.FIELD_HEIGHT - 3 * Settings.OBJECT_SIZE) {
                 continue;
             } else if (x < 3 * Settings.OBJECT_SIZE && y > Settings.FIELD_HEIGHT - 3 * Settings.OBJECT_SIZE) {
                 continue;
             } else if (x > Settings.FIELD_WIDTH - 3 * Settings.OBJECT_SIZE && y < 3 * Settings.OBJECT_SIZE) {
                 continue;
             }
-            if (!walls.contains(new Wall(x, y, Settings.OBJECT_SIZE))) {
-                boxes.add(new Box(x, y, Settings.OBJECT_SIZE));
+            Box newBox = new Box(x, y, Settings.OBJECT_SIZE);
+            if (!walls.contains(new Wall(x, y, Settings.OBJECT_SIZE)) && !boxes.contains(newBox)) {
+                boxes.add(newBox);
                 currentBoxesNumber += 1;
             }
         }
@@ -303,11 +282,6 @@ public class GameModel implements GameAction {
             boxesData.add(temp);
         }
         return boxesData;
-    }
-
-    public InitEventData createInitData() {
-        return new InitEventData(mainHero.createMainHeroData(), createWallsData(),
-                createEnemyesData(), createBoxesData());
     }
 
     private boolean checkOutsideWallsCollision(Rectangle person, double speed, MovableEventType eventType) {
@@ -359,7 +333,7 @@ public class GameModel implements GameAction {
         return true;
     }
 
-    public boolean checkBoxesCollision(Rectangle personRect) {
+    private boolean checkBoxesCollision(Rectangle personRect) {
         for (Box box : boxes) {
             int boxPositionX = (int) box.getPositionX();
             int boxPositionY = (int) box.getPositionY();
@@ -373,7 +347,7 @@ public class GameModel implements GameAction {
         return true;
     }
 
-    public int getRandomNumber(double min, double max) {
+    private int getRandomNumber(double min, double max) {
         return (int) ((Math.random() * (max - min)) + min);
     }
 
@@ -383,10 +357,6 @@ public class GameModel implements GameAction {
 
     public static GameState getGameState() {
         return gameState;
-    }
-
-    public List<Enemy> getEnemyes() {
-        return enemyes;
     }
 
 }

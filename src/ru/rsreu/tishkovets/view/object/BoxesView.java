@@ -17,7 +17,7 @@ public class BoxesView implements EventListener {
 
     public BoxesView(GraphicsContext gcInit) {
         gc = gcInit;
-        setImage("file:/home/liza/IdeaProjects/MVC_/src/ru/rsreu/tishkovets/view/resources/box.jpeg");
+        setImage("file:src/ru/rsreu/tishkovets/view/resources/box.jpeg");
     }
 
     public void setImage(String filename) {

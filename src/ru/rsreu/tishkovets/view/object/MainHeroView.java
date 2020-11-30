@@ -9,7 +9,7 @@ import ru.rsreu.tishkovets.events.data.object.PersonData;
 public class MainHeroView extends BaseView {
     public MainHeroView(GraphicsContext gcInit) {
         super(gcInit);
-        imageFilename = "file:/home/liza/IdeaProjects/MVC_/src/ru/rsreu/tishkovets/view/resources/mainHero.png";
+        imageFilename = "file:src/ru/rsreu/tishkovets/view/resources/mainHero.png";
     }
 
     @Override

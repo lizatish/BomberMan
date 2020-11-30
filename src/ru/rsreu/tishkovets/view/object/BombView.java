@@ -9,7 +9,7 @@ import ru.rsreu.tishkovets.events.data.object.BaseData;
 public class BombView extends BaseView {
     public BombView(GraphicsContext gcInit) {
         super(gcInit);
-        imageFilename = "file:/home/liza/IdeaProjects/MVC_/src/ru/rsreu/tishkovets/view/resources/bomb.png";
+        imageFilename = "file:src/ru/rsreu/tishkovets/view/resources/bomb.png";
     }
 
     @Override
@@ -26,7 +26,6 @@ public class BombView extends BaseView {
 
     @Override
     public void update(EventData data) {
-//        System.out.println("Walls update");
         render(data);
     }
 }

@@ -16,7 +16,7 @@ public class WallsView implements EventListener {
 
     public WallsView(GraphicsContext gcInit) {
         gc = gcInit;
-        setImage("file:/home/liza/IdeaProjects/MVC_/src/ru/rsreu/tishkovets/view/resources/wall.jpg");
+        setImage("file:src/ru/rsreu/tishkovets/view/resources/wall.jpg");
     }
 
     public void setImage(String filename) {

@@ -2,6 +2,7 @@ package ru.rsreu.tishkovets.model.gameobjects.bomb;
 
 import ru.rsreu.tishkovets.Settings;
 import ru.rsreu.tishkovets.model.GameModel;
+import ru.rsreu.tishkovets.model.GameState;
 import ru.rsreu.tishkovets.model.gameobjects.BaseObject;
 
 public class Explosion extends BaseObject implements Runnable {
@@ -17,22 +18,21 @@ public class Explosion extends BaseObject implements Runnable {
     private void explosionFinish() {
         isAlive = false;
         model.removeExplosion(this);
-        model.deleteBoxesInCollision(this);
+        model.removeBoxesInCollision(this);
     }
 
     @Override
     public void run() {
         long startTime = System.currentTimeMillis();
         isAlive = true;
-        while (isAlive) {
-            // while (isAlive && GameState.RUNNING.equals(Game.getGameState())) {
+        while (isAlive && GameState.RUNNING.equals(GameModel.getGameState())) {
             try {
                 Thread.sleep(50);
+                if (System.currentTimeMillis() - startTime > Settings.EXPLOSION_TIME) {
+                    explosionFinish();
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }
-            if (System.currentTimeMillis() - startTime > Settings.EXPLOSION_TIME) {
-                explosionFinish();
             }
         }
     }
