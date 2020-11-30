@@ -17,7 +17,7 @@ public enum EventType {
     },
     EXPLOSION_UPDATE {
 
-    }, BOXES_UPDATE {
+    }, BOX_DELETE {
 
     };
 

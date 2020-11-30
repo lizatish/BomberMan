@@ -3,7 +3,7 @@ package ru.rsreu.tishkovets.model.gameobjects.enemy;
 import ru.rsreu.tishkovets.events.EventManager;
 import ru.rsreu.tishkovets.events.EventType;
 import ru.rsreu.tishkovets.events.MovableEventType;
-import ru.rsreu.tishkovets.events.data.object.EnemyEventData;
+import ru.rsreu.tishkovets.events.data.PersonEventData;
 import ru.rsreu.tishkovets.events.data.object.PersonData;
 import ru.rsreu.tishkovets.model.gameobjects.Person;
 
@@ -43,7 +43,7 @@ public class Enemy extends Person implements Runnable {
 
     @Override
     public synchronized void update() {
-        eventManager.notify(EventType.ENEMY_UPDATE, new EnemyEventData(createEnemyData()));
+        eventManager.notify(EventType.ENEMY_UPDATE, new PersonEventData(createEnemyData()));
     }
 
     public PersonData createEnemyData() {
@@ -63,7 +63,5 @@ public class Enemy extends Person implements Runnable {
         } else if (moveDirection == MovableEventType.RIGHT) {
             moveRight();
         }
-
-
     }
 }

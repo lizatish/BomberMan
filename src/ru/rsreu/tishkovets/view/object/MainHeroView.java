@@ -3,7 +3,7 @@ package ru.rsreu.tishkovets.view.object;
 import javafx.scene.canvas.GraphicsContext;
 import ru.rsreu.tishkovets.events.data.EventData;
 import ru.rsreu.tishkovets.events.data.InitEventData;
-import ru.rsreu.tishkovets.events.data.MainHeroEventData;
+import ru.rsreu.tishkovets.events.data.PersonEventData;
 import ru.rsreu.tishkovets.events.data.object.PersonData;
 
 public class MainHeroView extends BaseView {
@@ -14,10 +14,10 @@ public class MainHeroView extends BaseView {
 
     @Override
     public void render(EventData data) {
-        if (data instanceof MainHeroEventData) {
-            MainHeroEventData renderData = (MainHeroEventData) data;
+        if (data instanceof PersonEventData) {
+            PersonEventData renderData = (PersonEventData) data;
 
-            PersonData mainHeroData = renderData.getMainHeroData();
+            PersonData mainHeroData = renderData.getPersonData();
 
             double mainHeroPositionX = mainHeroData.getPositionX();
             double mainHeroPositionY = mainHeroData.getPositionY();

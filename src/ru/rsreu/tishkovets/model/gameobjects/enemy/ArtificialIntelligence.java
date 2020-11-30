@@ -17,9 +17,6 @@ public class ArtificialIntelligence {
     private GameModel model;
     private Enemy enemy;
 
-    List<MovableEventType> VALUES = List.of(MovableEventType.values());
-    Random RANDOM = new Random();
-
     public ArtificialIntelligence(GameModel model) {
         this.model = model;
     }
@@ -98,11 +95,6 @@ public class ArtificialIntelligence {
 
         model.deleteWallIfEnemyCollision(enemy);
         return moveDirectionType;
-    }
-
-
-    public Enemy getEnemy() {
-        return enemy;
     }
 
     public void setEnemy(Enemy enemy) {

@@ -4,8 +4,7 @@ import ru.rsreu.tishkovets.Settings;
 import ru.rsreu.tishkovets.events.EventManager;
 import ru.rsreu.tishkovets.events.EventType;
 import ru.rsreu.tishkovets.events.data.object.BaseData;
-import ru.rsreu.tishkovets.events.data.object.BombEventData;
-//import ru.rsreu.tishkovets.events.data.object.StaticObjectData;
+import ru.rsreu.tishkovets.events.data.BaseEventData;
 
 public class Bomb implements Runnable {
     private final double positionX;
@@ -29,7 +28,7 @@ public class Bomb implements Runnable {
     private void boom() {
         System.out.println("Booom");
         isAlive = false;
-        eventManager.notify(EventType.BOMB_UPDATE, new BombEventData(createBombData()));
+        eventManager.notify(EventType.BOMB_UPDATE, new BaseEventData(createBombData()));
     }
 
     @Override

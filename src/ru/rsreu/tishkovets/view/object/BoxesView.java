@@ -4,6 +4,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import ru.rsreu.tishkovets.Settings;
 import ru.rsreu.tishkovets.events.EventListener;
+import ru.rsreu.tishkovets.events.data.BaseEventData;
 import ru.rsreu.tishkovets.events.data.EventData;
 import ru.rsreu.tishkovets.events.data.InitEventData;
 import ru.rsreu.tishkovets.events.data.object.BaseData;
@@ -24,16 +25,21 @@ public class BoxesView implements EventListener {
     }
 
     public void render(EventData data) {
-        InitEventData renderData = (InitEventData)data;
-        List<BaseData> boxes = renderData.getBoxesData();
-        for (BaseData box : boxes) {
-            gc.drawImage(image, box.getPositionX(), box.getPositionY());
+        if (data instanceof InitEventData) {
+            InitEventData renderData = (InitEventData) data;
+            List<BaseData> boxes = renderData.getBoxesData();
+            for (BaseData box : boxes) {
+                gc.drawImage(image, box.getPositionX(), box.getPositionY());
+            }
+        } else if (data instanceof BaseEventData) {
+            BaseEventData renderData = (BaseEventData) data;
+            BaseData box = renderData.getBaseData();
+            gc.clearRect(box.getPositionX(), box.getPositionY(), box.getSize(), box.getSize());
         }
     }
 
     @Override
     public void update(EventData data) {
-//        System.out.println("Walls update");
         render(data);
     }
 }

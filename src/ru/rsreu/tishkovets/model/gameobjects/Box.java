@@ -1,5 +1,7 @@
 package ru.rsreu.tishkovets.model.gameobjects;
 
+import ru.rsreu.tishkovets.events.data.object.BaseData;
+
 public class Box {
     private final double positionX;
     private final double positionY;
@@ -21,5 +23,9 @@ public class Box {
 
     public double getSize() {
         return size;
+    }
+
+    public BaseData createBoxData() {
+        return new BaseData(getPositionX(), getPositionY(), getSize());
     }
 }

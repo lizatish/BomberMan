@@ -39,13 +39,14 @@ public class GameView {
         MainHeroView mainHeroView = new MainHeroView(gc);
         WallsView wallsView = new WallsView(gc);
         BoxesView boxesView = new BoxesView(gc);
-        BombsView bombsView = new BombsView(gc);
+        BombView bombsView = new BombView(gc);
         EnemyView enemyView = new EnemyView(gc);
 
 
         eventManager.subscribe(EventType.MAINHERO_UPDATE, mainHeroView);
         eventManager.subscribe(EventType.BOMB_UPDATE, bombsView);
         eventManager.subscribe(EventType.ENEMY_UPDATE, enemyView);
+        eventManager.subscribe(EventType.BOX_DELETE, boxesView);
 
         eventManager.subscribe(EventType.INIT_UPDATE, mainHeroView);
         eventManager.subscribe(EventType.INIT_UPDATE, wallsView);

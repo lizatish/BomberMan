@@ -5,6 +5,7 @@ import ru.rsreu.tishkovets.Settings;
 import ru.rsreu.tishkovets.events.EventManager;
 import ru.rsreu.tishkovets.events.EventType;
 import ru.rsreu.tishkovets.events.MovableEventType;
+import ru.rsreu.tishkovets.events.data.BaseEventData;
 import ru.rsreu.tishkovets.events.data.InitEventData;
 import ru.rsreu.tishkovets.events.data.object.BaseData;
 import ru.rsreu.tishkovets.events.data.object.PersonData;
@@ -160,7 +161,9 @@ public class GameModel implements GameAction {
             Rectangle wallRect = new Rectangle(boxPositionX, boxPositionY, boxSize, boxSize);
             if (enemyRect.intersects(wallRect)) {
                 boxes.remove(box);
-//                eventManager.notify(EventType.BOXES_UPDATE, createBoxesData());
+                System.out.println(boxes.size());
+
+                eventManager.notify(EventType.BOX_DELETE, new BaseEventData(box.createBoxData()));
                 return;
             }
         }
