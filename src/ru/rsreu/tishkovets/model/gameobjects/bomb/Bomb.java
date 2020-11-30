@@ -9,6 +9,7 @@ import ru.rsreu.tishkovets.model.GameModel;
 import ru.rsreu.tishkovets.model.gameobjects.BaseObject;
 
 public class Bomb extends BaseObject implements Runnable {
+
     private final EventManager eventManager;
     private boolean isAlive;
     private final GameModel model;
@@ -17,13 +18,6 @@ public class Bomb extends BaseObject implements Runnable {
         super(x, y, size);
         this.eventManager = eventManager;
         this.model = model;
-    }
-
-
-    private void boom() {
-        System.out.println("Booom");
-        isAlive = false;
-        model.explodeBomb(this);
     }
 
     @Override
@@ -36,17 +30,22 @@ public class Bomb extends BaseObject implements Runnable {
             try {
                 Thread.sleep(50);
                 eventManager.notify(EventType.PLACE_BOMB, new BaseEventData(createBombData()));
+                if (System.currentTimeMillis() - startTime > Settings.BOMB_ALIVE_TIME) {
+                    boom();
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }
-
-            if (System.currentTimeMillis() - startTime > Settings.BOMB_ALIVE_TIME) {
-                boom();
             }
         }
     }
 
-    public BaseData createBombData() {
+    private void boom() {
+        System.out.println("Booom");
+        isAlive = false;
+        model.explodeBomb(this);
+    }
+
+    private BaseData createBombData() {
         return new BaseData(getPositionX(), getPositionY(), getSize());
     }
 

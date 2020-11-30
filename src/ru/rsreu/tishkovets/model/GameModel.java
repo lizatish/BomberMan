@@ -62,32 +62,8 @@ public class GameModel implements GameAction {
                 && checkBombsCollision(mainHeroRect, mainHeroPrevRect);
     }
 
-    public boolean canEnemyMove(MovableEventType eventType, Enemy enemy) {
-        Rectangle enemyRect = new Rectangle((int) enemy.getPositionX(), (int) enemy.getPositionY(),
-                (int) enemy.getSize(), (int) enemy.getSize());
-
-        return checkOutsideWallsCollision(enemyRect, enemy.getSpeed(), eventType) &&
-                checkInsideWallsCollision(enemyRect) && checkBombsCollision(enemyRect, enemyRect);
-    }
-
-    private void startModel() {
-//        Thread thread = new Thread(mainHero);
-//        thread.start();
-        for (Enemy enemy : enemyes) {
-            Thread thread = new Thread(enemy);
-            thread.start();
-        }
-    }
-
-    public void update(EventType eventType) {
-        if (eventType == EventType.INIT_UPDATE) {
-            eventManager.notify(eventType, createInitData());
-        }
-    }
-
-    @Override
-    public void placeBomb() {
-        if (bombCount != 0) {
+    public synchronized void placeBomb() {
+        if (bombCount > 0) {
             bombCount--;
 
             double horizontalStep = getHorizontalStep();
@@ -102,9 +78,39 @@ public class GameModel implements GameAction {
         }
     }
 
+    public boolean canEnemyMove(MovableEventType eventType, Enemy enemy) {
+        Rectangle enemyRect = new Rectangle((int) enemy.getPositionX(), (int) enemy.getPositionY(),
+                (int) enemy.getSize(), (int) enemy.getSize());
+
+        return checkOutsideWallsCollision(enemyRect, enemy.getSpeed(), eventType) &&
+                checkInsideWallsCollision(enemyRect) && checkBombsCollision(enemyRect, enemyRect);
+    }
+
+    public void update(EventType eventType) {
+        if (eventType == EventType.INIT_UPDATE) {
+            eventManager.notify(eventType, createInitData());
+        }
+    }
+
+    public void deleteBoxesInCollision(BaseObject object) {
+        Rectangle enemyRect = new Rectangle((int) object.getPositionX(), (int) object.getPositionY(),
+                (int) object.getSize(), (int) object.getSize());
+        for (Box box : boxes) {
+            int boxPositionX = (int) box.getPositionX();
+            int boxPositionY = (int) box.getPositionY();
+            int boxSize = (int) box.getSize();
+            Rectangle wallRect = new Rectangle(boxPositionX, boxPositionY, boxSize, boxSize);
+            if (enemyRect.intersects(wallRect)) {
+                boxes.remove(box);
+                eventManager.notify(EventType.BOX_DELETE, new BaseEventData(box.createBoxData()));
+                return;
+            }
+        }
+    }
+
     public synchronized void explodeBomb(Bomb bomb) {
-        explosion(bomb);
         bombs.remove(bomb);
+        explosion(bomb);
         bombCount += 1;
     }
 
@@ -164,6 +170,15 @@ public class GameModel implements GameAction {
             explosionData.add(temp);
         }
         return explosionData;
+    }
+
+    private void startModel() {
+//        Thread thread = new Thread(mainHero);
+//        thread.start();
+        for (Enemy enemy : enemyes) {
+            Thread thread = new Thread(enemy);
+            thread.start();
+        }
     }
 
     private void createExplosion(double x, double y) {
@@ -226,22 +241,6 @@ public class GameModel implements GameAction {
             enemyes.add(new Enemy(coordinates.getKey(), coordinates.getValue(),
                     Settings.OBJECT_SIZE - 4,
                     new ArtificialIntelligence(this), eventManager));
-        }
-    }
-
-    public void deleteBoxesInCollision(BaseObject object) {
-        Rectangle enemyRect = new Rectangle((int) object.getPositionX(), (int) object.getPositionY(),
-                (int) object.getSize(), (int) object.getSize());
-        for (Box box : boxes) {
-            int boxPositionX = (int) box.getPositionX();
-            int boxPositionY = (int) box.getPositionY();
-            int boxSize = (int) box.getSize();
-            Rectangle wallRect = new Rectangle(boxPositionX, boxPositionY, boxSize, boxSize);
-            if (enemyRect.intersects(wallRect)) {
-                boxes.remove(box);
-                eventManager.notify(EventType.BOX_DELETE, new BaseEventData(box.createBoxData()));
-                return;
-            }
         }
     }
 
@@ -389,4 +388,5 @@ public class GameModel implements GameAction {
     public List<Enemy> getEnemyes() {
         return enemyes;
     }
+
 }
