@@ -89,8 +89,10 @@ public class GameModel implements GameAction {
     public void placeBomb() {
         if (bombCount != 0) {
             bombCount--;
-            double bombPositionX = mainHero.getPositionX();
-            double bombPositionY = mainHero.getPositionY();
+
+            double horizontalStep = getHorizontalStep();
+            double bombPositionX = mainHero.getPositionX() - mainHero.getPositionX() % horizontalStep;
+            double bombPositionY = mainHero.getPositionY() - mainHero.getPositionY() % Settings.OBJECT_SIZE;
             double bombSize = mainHero.getSize();
 
             Bomb bomb = new Bomb(bombPositionX, bombPositionY, bombSize, eventManager, this);
@@ -106,7 +108,7 @@ public class GameModel implements GameAction {
         bombCount += 1;
     }
 
-    public synchronized void  removeExplosion(Explosion explosion) {
+    public synchronized void removeExplosion(Explosion explosion) {
         explosions.remove(explosion);
         eventManager.notify(EventType.EXPLOSION_REMOVE, new ExplosionsEventData(createExplosionData(true)));
         System.out.println(explosions.size());
