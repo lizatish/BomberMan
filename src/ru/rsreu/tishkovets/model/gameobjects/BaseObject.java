@@ -1,14 +1,14 @@
-package ru.rsreu.tishkovets.model.move;
+package ru.rsreu.tishkovets.model.gameobjects;
 
 
-public abstract class Mob {
+public abstract class BaseObject {
     protected double positionX;
     protected double positionY;
     protected double prevPositionX;
     protected double prevPositionY;
     protected final double size;
 
-    public Mob(double x, double y, double size) {
+    public BaseObject(double x, double y, double size) {
         this.size = size;
         positionX = x;
         positionY = y;

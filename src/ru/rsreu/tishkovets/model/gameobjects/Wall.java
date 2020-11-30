@@ -2,16 +2,9 @@ package ru.rsreu.tishkovets.model.gameobjects;
 
 import java.util.Objects;
 
-public class Wall {
-
-    private final double positionX;
-    private final double positionY;
-    private final double size;
-
+public class Wall extends BaseObject {
     public Wall(double x, double y, double size) {
-        positionX = x;
-        positionY = y;
-        this.size = size;
+        super(x, y, size);
     }
 
     @Override
@@ -27,18 +20,6 @@ public class Wall {
     @Override
     public int hashCode() {
         return Objects.hash(positionX, positionY, size);
-    }
-
-    public double getSize() {
-        return size;
-    }
-
-    public double getPositionX() {
-        return positionX;
-    }
-
-    public double getPositionY() {
-        return positionY;
     }
 
 }

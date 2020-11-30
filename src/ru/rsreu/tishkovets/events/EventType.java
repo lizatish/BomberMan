@@ -18,10 +18,12 @@ public enum EventType {
     EXPLOSION_UPDATE {
 
     },
+    EXPLOSION_REMOVE {
+
+    },
     BOX_DELETE {
 
     };
-
 
     public void subscribe(EventListener listener) {
         if (listeners == null) {

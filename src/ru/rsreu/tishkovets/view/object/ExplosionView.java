@@ -29,7 +29,8 @@ public class ExplosionView extends BaseView {
         for (BaseData explosion : explosions) {
             gc.clearRect(explosion.getPositionX(), explosion.getPositionY(),
                     explosion.getSize(), explosion.getSize());
-            gc.drawImage(image, explosion.getPositionX(), explosion.getPositionY());
+            if (!explosion.isDelete())
+                gc.drawImage(image, explosion.getPositionX(), explosion.getPositionY());
         }
     }
 }

@@ -10,6 +10,7 @@ import ru.rsreu.tishkovets.events.data.ExplosionsEventData;
 import ru.rsreu.tishkovets.events.data.InitEventData;
 import ru.rsreu.tishkovets.events.data.object.BaseData;
 import ru.rsreu.tishkovets.events.data.object.PersonData;
+import ru.rsreu.tishkovets.model.gameobjects.BaseObject;
 import ru.rsreu.tishkovets.model.gameobjects.bomb.Bomb;
 import ru.rsreu.tishkovets.model.gameobjects.Box;
 import ru.rsreu.tishkovets.model.gameobjects.MainHero;
@@ -34,7 +35,7 @@ public class GameModel implements GameAction {
     private final List<Enemy> enemyes = new ArrayList<>();
     private final List<Explosion> explosions = new CopyOnWriteArrayList<>();
 
-    private int bombCount;
+    private int bombCount = 1;
 
     public GameModel(EventManager eventManager) {
         this.eventManager = eventManager;
@@ -86,27 +87,29 @@ public class GameModel implements GameAction {
 
     @Override
     public void placeBomb() {
-//        if (bombCount != 0) {
-//            bombCount--;
-        double bombPositionX = mainHero.getPositionX();
-        double bombPositionY = mainHero.getPositionY();
-        double bombSize = mainHero.getSize();
+        if (bombCount != 0) {
+            bombCount--;
+            double bombPositionX = mainHero.getPositionX();
+            double bombPositionY = mainHero.getPositionY();
+            double bombSize = mainHero.getSize();
 
-        Bomb bomb = new Bomb(bombPositionX, bombPositionY, bombSize, eventManager, this);
-        bombs.add(bomb);
-        Thread thread = new Thread(bomb);
-        thread.start();
-        //        }
-
+            Bomb bomb = new Bomb(bombPositionX, bombPositionY, bombSize, eventManager, this);
+            bombs.add(bomb);
+            Thread thread = new Thread(bomb);
+            thread.start();
+        }
     }
 
-    public void explodeBomb(Bomb bomb) {
+    public synchronized void explodeBomb(Bomb bomb) {
         explosion(bomb);
         bombs.remove(bomb);
+        bombCount += 1;
     }
 
-    public void removeExplosion(Explosion explosion) {
+    public synchronized void  removeExplosion(Explosion explosion) {
         explosions.remove(explosion);
+        eventManager.notify(EventType.EXPLOSION_REMOVE, new ExplosionsEventData(createExplosionData(true)));
+        System.out.println(explosions.size());
     }
 
     private synchronized void explosion(Bomb bomb) {
@@ -148,21 +151,21 @@ public class GameModel implements GameAction {
         }
 
         createExplosion(bombPositionX, bombPositionY);
-        eventManager.notify(EventType.EXPLOSION_UPDATE, new ExplosionsEventData(createExplosionData()));
-        System.out.println(explosions.size());
+        eventManager.notify(EventType.EXPLOSION_UPDATE, new ExplosionsEventData(createExplosionData(false)));
     }
 
-    private List<BaseData> createExplosionData() {
+    private synchronized List<BaseData> createExplosionData(boolean isDelete) {
         List<BaseData> explosionData = new ArrayList<>();
         for (Explosion explosion : explosions) {
-            BaseData temp = new BaseData(explosion.getPositionX(), explosion.getPositionY(), explosion.getSize());
+            BaseData temp = new BaseData(explosion.getPositionX(),
+                    explosion.getPositionY(), explosion.getSize(), isDelete);
             explosionData.add(temp);
         }
         return explosionData;
     }
 
     private void createExplosion(double x, double y) {
-        Explosion explosion = new Explosion(x, y, Settings.OBJECT_SIZE, eventManager, this);
+        Explosion explosion = new Explosion(x, y, Settings.OBJECT_SIZE, this);
         if (explosions.contains(explosion))
             return;
         explosions.add(explosion);
@@ -224,9 +227,9 @@ public class GameModel implements GameAction {
         }
     }
 
-    public void deleteWallIfEnemyCollision(Enemy enemy) {
-        Rectangle enemyRect = new Rectangle((int) enemy.getPositionX(), (int) enemy.getPositionY(),
-                (int) enemy.getSize(), (int) enemy.getSize());
+    public void deleteBoxesInCollision(BaseObject object) {
+        Rectangle enemyRect = new Rectangle((int) object.getPositionX(), (int) object.getPositionY(),
+                (int) object.getSize(), (int) object.getSize());
         for (Box box : boxes) {
             int boxPositionX = (int) box.getPositionX();
             int boxPositionY = (int) box.getPositionY();
@@ -379,18 +382,6 @@ public class GameModel implements GameAction {
 
     public static GameState getGameState() {
         return gameState;
-    }
-
-    public List<Wall> getWalls() {
-        return walls;
-    }
-
-    public List<Box> getBoxes() {
-        return boxes;
-    }
-
-    public List<Bomb> getBombs() {
-        return bombs;
     }
 
     public List<Enemy> getEnemyes() {

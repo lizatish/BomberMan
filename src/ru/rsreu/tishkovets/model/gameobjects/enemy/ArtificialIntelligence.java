@@ -1,15 +1,8 @@
 package ru.rsreu.tishkovets.model.gameobjects.enemy;
 
 
-import ru.rsreu.tishkovets.events.EventManager;
-import ru.rsreu.tishkovets.events.EventType;
 import ru.rsreu.tishkovets.events.MovableEventType;
 import ru.rsreu.tishkovets.model.GameModel;
-import ru.rsreu.tishkovets.model.gameobjects.Box;
-
-import java.awt.*;
-import java.util.List;
-import java.util.Random;
 
 
 public class ArtificialIntelligence {
@@ -93,7 +86,7 @@ public class ArtificialIntelligence {
             }
         }
 
-        model.deleteWallIfEnemyCollision(enemy);
+        model.deleteBoxesInCollision(enemy);
         return moveDirectionType;
     }
 

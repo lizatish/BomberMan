@@ -1,14 +1,9 @@
 package ru.rsreu.tishkovets.model.gameobjects;
 
 
-import javafx.event.Event;
 import ru.rsreu.tishkovets.events.EventManager;
-import ru.rsreu.tishkovets.events.EventType;
-import ru.rsreu.tishkovets.model.GameModel;
-import ru.rsreu.tishkovets.model.move.Mob;
-import ru.rsreu.tishkovets.model.move.Movable;
 
-public abstract class Person extends Mob implements Movable {
+public abstract class Person extends BaseObject {
     protected double speed = 1;
     protected EventManager eventManager;
 
@@ -17,27 +12,22 @@ public abstract class Person extends Mob implements Movable {
         this.eventManager = eventManager;
     }
 
-    @Override
     public void moveUp() {
         setVelocity(0, -speed);
     }
 
-    @Override
     public void moveDown() {
         setVelocity(0, speed);
     }
 
-    @Override
     public void moveLeft() {
         setVelocity(-speed, 0);
     }
 
-    @Override
     public void moveRight() {
         setVelocity(speed, 0);
     }
 
-    @Override
     public void stop() {
         setVelocity(0, 0);
     }
