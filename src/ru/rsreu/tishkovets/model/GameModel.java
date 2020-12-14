@@ -42,10 +42,11 @@ public class GameModel implements GameAction {
     public GameModel(EventManager eventManager) {
         this.eventManager = eventManager;
 
-        mainHero = new MainHero(0, 0, Settings.OBJECT_SIZE - 4, eventManager);
+        mainHero = new MainHero(Settings.OBJECT_SIZE, Settings.OBJECT_SIZE,
+                Settings.OBJECT_SIZE - 4, eventManager);
 
-        generateEnemyes();
         generateWallsAndBoxes();
+        generateEnemyes();
     }
 
     @Override
@@ -167,7 +168,7 @@ public class GameModel implements GameAction {
     public synchronized void removeEnemy(Enemy enemy) {
         eventManager.notify(EventType.ENEMY_REMOVE, new PersonEventData(enemy.createEnemyData(true)));
         enemies.remove(enemy);
-        if (enemies.size() == 0){
+        if (enemies.size() == 0) {
             gameState = GameState.END;
         }
     }
@@ -268,12 +269,13 @@ public class GameModel implements GameAction {
         List<Pair<Double, Double>> enemyCoordinates = new ArrayList<>();
 
         if (Settings.ENEMYES_NUMBER >= 1) {
-            enemyCoordinates.add(new Pair<>(Settings.FIELD_WIDTH - Settings.OBJECT_SIZE,
-                    Settings.FIELD_HEIGHT - Settings.OBJECT_SIZE));
+            enemyCoordinates.add(new Pair<>(Settings.FIELD_WIDTH - 2 * Settings.OBJECT_SIZE,
+                    Settings.FIELD_HEIGHT - 2 * Settings.OBJECT_SIZE));
             if (Settings.ENEMYES_NUMBER >= 2) {
-                enemyCoordinates.add(new Pair<>(Settings.FIELD_WIDTH - Settings.OBJECT_SIZE, 0.0));
+                enemyCoordinates.add(new Pair<>(Settings.FIELD_WIDTH - 2 * Settings.OBJECT_SIZE,
+                        Settings.OBJECT_SIZE));
                 if (Settings.ENEMYES_NUMBER >= 3) {
-                    enemyCoordinates.add(new Pair<>(0.0, Settings.FIELD_HEIGHT - Settings.OBJECT_SIZE));
+                    enemyCoordinates.add(new Pair<>(Settings.OBJECT_SIZE, Settings.FIELD_HEIGHT - 2 * Settings.OBJECT_SIZE));
                 }
             }
         }
@@ -287,8 +289,23 @@ public class GameModel implements GameAction {
 
     private void createWalls() {
         double horizontalStep = getHorizontalStep();
-        for (double i = horizontalStep; i < Settings.FIELD_WIDTH; i += 2 * horizontalStep) {
-            for (double j = Settings.OBJECT_SIZE; j < Settings.FIELD_HEIGHT; j += 2 * Settings.OBJECT_SIZE) {
+
+        for (int i = 0; i < Settings.FIELD_WIDTH; i += horizontalStep) {
+            Wall temp = new Wall(i, 0, Settings.OBJECT_SIZE);
+            walls.add(temp);
+            temp = new Wall(i, Settings.FIELD_HEIGHT - Settings.OBJECT_SIZE, Settings.OBJECT_SIZE);
+            walls.add(temp);
+        }
+
+        for (int j = 0; j < Settings.FIELD_HEIGHT; j += Settings.OBJECT_SIZE) {
+            Wall temp = new Wall(0, j, Settings.OBJECT_SIZE);
+            walls.add(temp);
+            temp = new Wall(Settings.FIELD_WIDTH - Settings.OBJECT_SIZE, j, Settings.OBJECT_SIZE);
+            walls.add(temp);
+        }
+
+        for (double i = 2 * horizontalStep; i < Settings.FIELD_WIDTH; i += 2 * horizontalStep) {
+            for (double j = 2 * Settings.OBJECT_SIZE; j < Settings.FIELD_HEIGHT; j += 2 * Settings.OBJECT_SIZE) {
                 Wall temp = new Wall(i, j, Settings.OBJECT_SIZE);
                 walls.add(temp);
             }
