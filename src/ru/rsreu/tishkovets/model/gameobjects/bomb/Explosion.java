@@ -26,13 +26,8 @@ public class Explosion extends BaseObject implements Runnable {
         long startTime = System.currentTimeMillis();
         isAlive = true;
         while (isAlive && GameState.RUNNING.equals(GameModel.getGameState())) {
-            try {
-                Thread.sleep(50);
-                if (System.currentTimeMillis() - startTime > Settings.EXPLOSION_TIME) {
-                    explosionFinish();
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            if (System.currentTimeMillis() - startTime > Settings.EXPLOSION_TIME) {
+                explosionFinish();
             }
         }
     }

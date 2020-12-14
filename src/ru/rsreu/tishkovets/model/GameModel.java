@@ -143,7 +143,7 @@ public class GameModel implements GameAction {
 
     public synchronized void removeExplosion(Explosion explosion) {
         if (checkMainHeroOnDeath()) {
-            setGameState(GameState.FINISHED);
+            setGameState(GameState.END);
             System.out.println("GAME OVER");
         }
         for (Enemy enemy : enemies) {
@@ -169,7 +169,7 @@ public class GameModel implements GameAction {
         eventManager.notify(EventType.ENEMY_REMOVE, new PersonEventData(enemy.createEnemyData(true)));
         enemies.remove(enemy);
         if (enemies.size() == 0) {
-            gameState = GameState.END;
+            setGameState(GameState.FINISHED);
         }
     }
 
@@ -363,6 +363,7 @@ public class GameModel implements GameAction {
         return boxesData;
     }
 
+    // TODO удалить и все что связано
     private boolean checkOutsideWallsCollision(Rectangle person, double speed, MovableEventType eventType) {
         if (eventType == MovableEventType.UP) {
             person.y -= speed;

@@ -1,10 +1,12 @@
 package ru.rsreu.tishkovets.view;
 
 import javafx.animation.AnimationTimer;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import ru.rsreu.tishkovets.Settings;
@@ -13,6 +15,10 @@ import ru.rsreu.tishkovets.events.GameEventType;
 import ru.rsreu.tishkovets.events.MovableEventType;
 import ru.rsreu.tishkovets.events.EventManager;
 import ru.rsreu.tishkovets.events.EventType;
+import ru.rsreu.tishkovets.model.GameModel;
+import ru.rsreu.tishkovets.model.GameState;
+import ru.rsreu.tishkovets.view.notification.EndGameNotification;
+import ru.rsreu.tishkovets.view.notification.FinishedGameNotification;
 import ru.rsreu.tishkovets.view.notification.NewGameNotification;
 import ru.rsreu.tishkovets.view.notification.PausedNotifcation;
 import ru.rsreu.tishkovets.view.object.*;
@@ -25,8 +31,9 @@ public class GameView {
     private GraphicsContext gc;
     private final GameController controller;
     private final EventManager eventManager;
-    private boolean isStartGame = false;
-    private boolean isPausedGame = false;
+
+    GameState previousState;
+    GameState currentState;
 
     public GameView(GameController controller, EventManager eventManager) {
         this.controller = controller;
@@ -60,32 +67,38 @@ public class GameView {
 
         new AnimationTimer() {
             public void handle(long currentNanoTime) {
-                GameEventType gameEventType = GameEventType.getGameEventTypeByKeyName(keyboardInput);
-                if (gameEventType != null) {
-                    if (gameEventType == GameEventType.START && !isStartGame) {
-                        isStartGame = true;
-                        gc.clearRect(0, 0, Settings.FIELD_WIDTH, Settings.FIELD_HEIGHT);
-                    } else if (gameEventType == GameEventType.PAUSE) {
-                        isPausedGame = !isPausedGame;
-                        gc.clearRect(0, 0, Settings.FIELD_WIDTH, Settings.FIELD_HEIGHT);
+
+
+                currentState = GameModel.getGameState();
+                if (!currentState.equals(previousState)) {
+                    if (GameModel.getGameState().equals(GameState.NEW)) {
+                        NewGameNotification notification = new NewGameNotification();
+                        notification.render(gc);
+                    } else if (GameModel.getGameState().equals(GameState.PAUSED)) {
+                        PausedNotifcation notification = new PausedNotifcation();
+                        notification.render(gc);
                     }
-                    controller.startAction(gameEventType);
                 }
 
-                if (!isStartGame) {
-                    NewGameNotification notification = new NewGameNotification();
-                    notification.render(gc);
-                } else if (isPausedGame) {
-                    PausedNotifcation notification = new PausedNotifcation();
-                    notification.render(gc);
-                } else {
+                if (currentState.equals(GameState.RUNNING)) {
                     MovableEventType eventType = MovableEventType.getMovableOperationByKeyName(keyboardInput);
                     if (eventType != null) {
                         controller.move(eventType);
                     }
+                } else if (currentState.equals(GameState.END)) {
+                    gc.clearRect(0, 0, Settings.FIELD_WIDTH, Settings.FIELD_HEIGHT);
+                    EndGameNotification notification = new EndGameNotification();
+                    notification.render(gc);
+                } else if (currentState.equals(GameState.FINISHED)) {
+                    gc.clearRect(0, 0, Settings.FIELD_WIDTH, Settings.FIELD_HEIGHT);
+                    FinishedGameNotification notification = new FinishedGameNotification();
+                    notification.render(gc);
                 }
+
+                previousState = currentState;
             }
         }.start();
+
     }
 
     private void initializeGameSceneAndKeyboard(Stage primaryStage) {
@@ -102,18 +115,34 @@ public class GameView {
 
     private void initializeKeyboard(Scene theScene) {
         keyboardInput = new ArrayList<>();
-        theScene.setOnKeyPressed(
-                e -> {
-                    String code = e.getCode().toString();
-                    if (!keyboardInput.contains(code))
-                        keyboardInput.add(code);
-                });
+        theScene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                String code = event.getCode().toString();
+                if (!keyboardInput.contains(code))
+                    keyboardInput.add(code);
 
-        theScene.setOnKeyReleased(
-                e -> {
-                    String code = e.getCode().toString();
-                    keyboardInput.remove(code);
-                });
+                GameEventType gameEventType = GameEventType.getGameEventTypeByKeyName(keyboardInput);
+                if (gameEventType != null) {
+                    if (gameEventType == GameEventType.START) {
+                        gc.clearRect(0, 0, Settings.FIELD_WIDTH, Settings.FIELD_HEIGHT);
+                    } else if (gameEventType == GameEventType.PAUSE) {
+                        gc.clearRect(0, 0, Settings.FIELD_WIDTH, Settings.FIELD_HEIGHT);
+                    }
+                    controller.startAction(gameEventType);
+                }
+            }
+        });
+
+        theScene.setOnKeyReleased(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                String code = event.getCode().toString();
+                keyboardInput.remove(code);
+            }
+        });
     }
-
 }
+
+
+

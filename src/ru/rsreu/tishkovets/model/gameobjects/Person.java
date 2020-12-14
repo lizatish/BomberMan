@@ -8,6 +8,7 @@ import ru.rsreu.tishkovets.model.GameState;
 public abstract class Person extends BaseObject {
     protected double speed = 1;
     protected EventManager eventManager;
+    protected boolean isMoving = true;
 
     public Person(double x, double y, double size, EventManager eventManager) {
         super(x, y, size);

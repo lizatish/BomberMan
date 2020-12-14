@@ -25,9 +25,11 @@ public class Enemy extends Person implements Runnable {
 
     @Override
     public void run() {
-        while (this.isAlive && GameState.RUNNING.equals(GameModel.getGameState())) {
-            try {
+        while (this.isAlive) {
+            if (this.isMoving && GameState.RUNNING.equals(GameModel.getGameState())) {
                 calculateMove();
+            }
+            try {
                 Thread.sleep(50);
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -64,7 +66,7 @@ public class Enemy extends Person implements Runnable {
             this.isAlive = false;
         }
         if (model.checkMainHeroOnDeath()) {
-            GameModel.setGameState(GameState.FINISHED);
+            GameModel.setGameState(GameState.END);
             System.out.println("GAME OVER");
         }
     }
