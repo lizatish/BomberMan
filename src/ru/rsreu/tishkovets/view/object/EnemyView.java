@@ -25,9 +25,15 @@ public class EnemyView extends BaseView {
             double enemyPrevPositionX = enemyData.getPrevPositionX();
             double enemyPrevPositionY = enemyData.getPrevPositionY();
             double enemySize = enemyData.getSize();
+            boolean isDelete = enemyData.isDelete();
 
+            if (isDelete){
+                System.out.printf("11111111111111111111111111111111111111");
+            }
             gc.clearRect(enemyPrevPositionX, enemyPrevPositionY, enemySize, enemySize);
-            gc.drawImage(image, enemyPositionX, enemyPositionY);
+            if (!isDelete) {
+                gc.drawImage(image, enemyPositionX, enemyPositionY);
+            }
 
         } else if (data instanceof InitEventData) {
             InitEventData renderData = (InitEventData) data;

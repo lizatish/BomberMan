@@ -33,6 +33,7 @@ public class ArtificialIntelligence {
                 }
             }
         }
+
         model.removeBoxesInCollision(enemy);
         return moveDirectionType;
     }

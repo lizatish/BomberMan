@@ -66,10 +66,6 @@ public abstract class Person extends BaseObject {
         return prevPositionX;
     }
 
-    public void setSpeed(double speed) {
-        this.speed = speed;
-    }
-
     public double getPrevPositionY() {
         return prevPositionY;
     }

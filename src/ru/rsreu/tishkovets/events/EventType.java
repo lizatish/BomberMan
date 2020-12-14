@@ -23,6 +23,9 @@ public enum EventType {
     },
     BOX_DELETE {
 
+    },
+    ENEMY_REMOVE {
+
     };
 
     public void subscribe(EventListener listener) {

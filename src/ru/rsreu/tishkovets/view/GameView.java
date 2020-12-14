@@ -48,6 +48,7 @@ public class GameView {
         eventManager.subscribe(EventType.PLACE_BOMB, bombsView);
 
         eventManager.subscribe(EventType.ENEMY_UPDATE, enemyView);
+        eventManager.subscribe(EventType.ENEMY_REMOVE, enemyView);
         eventManager.subscribe(EventType.BOX_DELETE, boxesView);
         eventManager.subscribe(EventType.EXPLOSION_UPDATE, explosionView);
         eventManager.subscribe(EventType.EXPLOSION_REMOVE, explosionView);

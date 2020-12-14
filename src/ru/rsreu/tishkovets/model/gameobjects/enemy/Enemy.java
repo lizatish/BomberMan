@@ -37,11 +37,12 @@ public class Enemy extends Person implements Runnable {
 
     @Override
     public synchronized void update() {
-        eventManager.notify(EventType.ENEMY_UPDATE, new PersonEventData(createEnemyData()));
+        eventManager.notify(EventType.ENEMY_UPDATE, new PersonEventData(createEnemyData(false)));
     }
 
-    public PersonData createEnemyData() {
-        return new PersonData(getPositionX(), getPositionY(), getPrevPositionX(), getPrevPositionY(), getSize());
+    public PersonData createEnemyData(boolean isDelete) {
+        return new PersonData(getPositionX(), getPositionY(), getPrevPositionX(),
+                getPrevPositionY(), getSize(), isDelete);
     }
 
     private void calculateMove() {
@@ -66,7 +67,6 @@ public class Enemy extends Person implements Runnable {
             GameModel.setGameState(GameState.FINISHED);
             System.out.println("GAME OVER");
         }
-        // TODO проверка на смерть врага
     }
 
     private void initAi() {
