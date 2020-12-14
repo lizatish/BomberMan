@@ -49,6 +49,7 @@ public class GameView {
         BombView bombsView = new BombView(gc);
         EnemyView enemyView = new EnemyView(gc);
         ExplosionView explosionView = new ExplosionView(gc);
+        ScoreView scoreView = new ScoreView(gc);
 
 
         eventManager.subscribe(EventType.MAINHERO_UPDATE, mainHeroView);
@@ -59,6 +60,7 @@ public class GameView {
         eventManager.subscribe(EventType.BOX_DELETE, boxesView);
         eventManager.subscribe(EventType.EXPLOSION_UPDATE, explosionView);
         eventManager.subscribe(EventType.EXPLOSION_REMOVE, explosionView);
+        eventManager.subscribe(EventType.SCORE_UPDATE, scoreView);
 
         eventManager.subscribe(EventType.INIT_UPDATE, mainHeroView);
         eventManager.subscribe(EventType.INIT_UPDATE, wallsView);
@@ -67,7 +69,6 @@ public class GameView {
 
         new AnimationTimer() {
             public void handle(long currentNanoTime) {
-
 
                 currentState = GameModel.getGameState();
                 if (!currentState.equals(previousState)) {

@@ -27,9 +27,6 @@ public class EnemyView extends BaseView {
             double enemySize = enemyData.getSize();
             boolean isDelete = enemyData.isDelete();
 
-            if (isDelete){
-                System.out.printf("11111111111111111111111111111111111111");
-            }
             gc.clearRect(enemyPrevPositionX, enemyPrevPositionY, enemySize, enemySize);
             if (!isDelete) {
                 gc.drawImage(image, enemyPositionX, enemyPositionY);

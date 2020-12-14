@@ -28,11 +28,11 @@ public class GameController {
 
         model.getMainHero().stop();
 
-        if (model.checkMainHeroOnDeath()){
+        if (model.checkMainHeroOnDeath()) {
             GameModel.setGameState(GameState.END);
             System.out.println("GAME OVER");
         }
-
+        System.out.println(GameModel.getScore());;
     }
 
     public void startAction(GameEventType gameEventType) {

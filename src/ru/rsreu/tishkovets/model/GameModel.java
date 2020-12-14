@@ -10,10 +10,7 @@ import ru.rsreu.tishkovets.Settings;
 import ru.rsreu.tishkovets.events.EventManager;
 import ru.rsreu.tishkovets.events.EventType;
 import ru.rsreu.tishkovets.events.MovableEventType;
-import ru.rsreu.tishkovets.events.data.BaseEventData;
-import ru.rsreu.tishkovets.events.data.ExplosionsEventData;
-import ru.rsreu.tishkovets.events.data.InitEventData;
-import ru.rsreu.tishkovets.events.data.PersonEventData;
+import ru.rsreu.tishkovets.events.data.*;
 import ru.rsreu.tishkovets.events.data.object.BaseData;
 import ru.rsreu.tishkovets.events.data.object.PersonData;
 import ru.rsreu.tishkovets.model.gameobjects.BaseObject;
@@ -27,17 +24,17 @@ import ru.rsreu.tishkovets.model.gameobjects.enemy.Enemy;
 
 public class GameModel implements GameAction {
 
-    private final EventManager eventManager;
     private static GameState gameState = GameState.NEW;
+    private static int Score;
 
+    private final EventManager eventManager;
     private final MainHero mainHero;
     private final List<Wall> walls = new ArrayList<>();
     private final List<Box> boxes = new CopyOnWriteArrayList<>();
     private final List<Bomb> bombs = new ArrayList<>();
     private final List<Enemy> enemies = new ArrayList<>();
     private final List<Explosion> explosions = new CopyOnWriteArrayList<>();
-
-    private int bombCount = 1;
+    private int bombCount = Settings.BOMB_COUNT;
 
     public GameModel(EventManager eventManager) {
         this.eventManager = eventManager;
@@ -47,6 +44,10 @@ public class GameModel implements GameAction {
 
         generateWallsAndBoxes();
         generateEnemyes();
+    }
+
+    public static int getScore() {
+        return Score;
     }
 
     @Override
@@ -59,6 +60,7 @@ public class GameModel implements GameAction {
         if (GameState.NEW == gameState) {
             gameState = GameState.RUNNING;
             update(EventType.INIT_UPDATE);
+            eventManager.notify(EventType.SCORE_UPDATE, new ScoreEventData(Score, gameState));
         }
         startModel();
     }
@@ -130,6 +132,9 @@ public class GameModel implements GameAction {
             Rectangle wallRect = new Rectangle(boxPositionX, boxPositionY, boxSize, boxSize);
             if (objectRect.intersects(wallRect)) {
                 boxes.remove(box);
+                if (object instanceof Explosion) {
+                    changeScore(10);
+                }
                 eventManager.notify(EventType.BOX_DELETE, new BaseEventData(box.createBoxData()));
             }
         }
@@ -168,9 +173,15 @@ public class GameModel implements GameAction {
     public synchronized void removeEnemy(Enemy enemy) {
         eventManager.notify(EventType.ENEMY_REMOVE, new PersonEventData(enemy.createEnemyData(true)));
         enemies.remove(enemy);
+        changeScore(100);
         if (enemies.size() == 0) {
             setGameState(GameState.FINISHED);
         }
+    }
+
+    private void changeScore(int value) {
+        Score += value;
+        eventManager.notify(EventType.SCORE_UPDATE, new ScoreEventData(Score, gameState));
     }
 
     public boolean checkEnemyOnDeath(Enemy enemy) {

@@ -26,6 +26,9 @@ public enum EventType {
     },
     ENEMY_REMOVE {
 
+    },
+    SCORE_UPDATE {
+
     };
 
     public void subscribe(EventListener listener) {

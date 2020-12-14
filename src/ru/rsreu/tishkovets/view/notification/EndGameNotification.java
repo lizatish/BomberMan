@@ -4,6 +4,7 @@ import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.text.TextAlignment;
 import ru.rsreu.tishkovets.Settings;
+import ru.rsreu.tishkovets.model.GameModel;
 
 public class EndGameNotification {
     private static final String FONT_TYPE = "TimesRoman";
@@ -21,7 +22,7 @@ public class EndGameNotification {
         );
         gc.setFont(new javafx.scene.text.Font(FONT_TYPE, 68));
         gc.fillText(
-                "Game Over! You lost. \nYour score is ",
+                String.format("Game Over! You lost. \nYour score is %d", GameModel.getScore()),
                 Settings.FIELD_WIDTH / 2,
                 Settings.FIELD_HEIGHT * 3 / 4
         );
