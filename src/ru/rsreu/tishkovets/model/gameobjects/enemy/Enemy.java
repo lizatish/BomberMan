@@ -13,10 +13,12 @@ public class Enemy extends Person implements Runnable {
 
     private final ArtificialIntelligence aI;
     private MovableEventType moveDirection;
+    private GameModel model;
     private boolean isAlive = true;
 
-    public Enemy(double x, double y, double size, ArtificialIntelligence aI, EventManager eventManager) {
+    public Enemy(double x, double y, double size, ArtificialIntelligence aI, GameModel model, EventManager eventManager) {
         super(x, y, size, eventManager);
+        this.model = model;
         this.aI = aI;
         initAi();
     }
@@ -26,7 +28,7 @@ public class Enemy extends Person implements Runnable {
         while (this.isAlive && GameState.RUNNING.equals(GameModel.getGameState())) {
             try {
                 calculateMove();
-                Thread.sleep(8);
+                Thread.sleep(50);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -43,6 +45,7 @@ public class Enemy extends Person implements Runnable {
     }
 
     private void calculateMove() {
+
         moveDirection = aI.calculateDirection();
 
         if (moveDirection == MovableEventType.UP) {
@@ -54,6 +57,8 @@ public class Enemy extends Person implements Runnable {
         } else if (moveDirection == MovableEventType.RIGHT) {
             moveRight();
         }
+
+        // TODO проверка на смерть врага
     }
 
     private void initAi() {

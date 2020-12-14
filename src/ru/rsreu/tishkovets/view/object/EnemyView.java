@@ -29,7 +29,6 @@ public class EnemyView extends BaseView {
             gc.clearRect(enemyPrevPositionX, enemyPrevPositionY, enemySize, enemySize);
             gc.drawImage(image, enemyPositionX, enemyPositionY);
 
-
         } else if (data instanceof InitEventData) {
             InitEventData renderData = (InitEventData) data;
             List<PersonData> enemyesData = renderData.getEnemyesData();

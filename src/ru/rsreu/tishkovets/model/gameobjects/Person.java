@@ -2,6 +2,8 @@ package ru.rsreu.tishkovets.model.gameobjects;
 
 
 import ru.rsreu.tishkovets.events.EventManager;
+import ru.rsreu.tishkovets.model.GameModel;
+import ru.rsreu.tishkovets.model.GameState;
 
 public abstract class Person extends BaseObject {
     protected double speed = 1;
@@ -33,11 +35,13 @@ public abstract class Person extends BaseObject {
     }
 
     private void setVelocity(double x, double y) {
-        prevPositionX = positionX;
-        prevPositionY = positionY;
-        positionX += x;
-        positionY += y;
-        update();
+        if (GameState.RUNNING.equals(GameModel.getGameState())) {
+            prevPositionX = positionX;
+            prevPositionY = positionY;
+            positionX += x;
+            positionY += y;
+            update();
+        }
     }
 
     public abstract void update();

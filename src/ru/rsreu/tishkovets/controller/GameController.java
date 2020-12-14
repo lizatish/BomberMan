@@ -3,6 +3,7 @@ package ru.rsreu.tishkovets.controller;
 import ru.rsreu.tishkovets.events.GameEventType;
 import ru.rsreu.tishkovets.events.MovableEventType;
 import ru.rsreu.tishkovets.model.GameModel;
+import ru.rsreu.tishkovets.model.GameState;
 
 public class GameController {
     private final GameModel model;
@@ -24,7 +25,14 @@ public class GameController {
                 model.getMainHero().moveRight();
             }
         }
+
         model.getMainHero().stop();
+
+        if (model.checkMainHeroIsDeath()){
+            GameModel.setGameState(GameState.FINISHED);
+            System.out.println("GAME OVER");
+        }
+
     }
 
     public void startAction(GameEventType gameEventType) {

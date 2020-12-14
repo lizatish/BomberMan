@@ -137,13 +137,47 @@ public class GameModel implements GameAction {
     }
 
     public synchronized void removeExplosion(Explosion explosion) {
+        //        TODO: написать проверку на пересечение с игроками и монстрами
+        if (checkMainHeroIsDeath()) {
+            setGameState(GameState.FINISHED);
+
+            System.out.println("GAME OVER");
+        }
+
         eventManager.notify(EventType.EXPLOSION_REMOVE, new ExplosionsEventData(createExplosionData(true)));
         explosions.remove(explosion);
+    }
+
+    public static void setGameState(GameState gameState_) {
+        gameState = gameState_;
     }
 
     public InitEventData createInitData() {
         return new InitEventData(mainHero.createMainHeroData(), createWallsData(),
                 createEnemyesData(), createBoxesData());
+    }
+
+
+    public boolean checkMainHeroIsDeath() {
+        Rectangle mainHeroRect = new Rectangle((int) mainHero.getPositionX(),
+                (int) mainHero.getPositionY(), (int) mainHero.getSize(), (int) mainHero.getSize());
+
+        for (Explosion explosion : explosions) {
+            Rectangle explosionRect = new Rectangle((int) explosion.getPositionX(),
+                    (int) explosion.getPositionY(), (int) explosion.getSize(), (int) explosion.getSize());
+            if (mainHeroRect.intersects(explosionRect)) {
+                return true;
+            }
+        }
+
+        for (Enemy enemy : enemyes) {
+            Rectangle enemyRect = new Rectangle((int) enemy.getPositionX(),
+                    (int) enemy.getPositionY(), (int) enemy.getSize(), (int) enemy.getSize());
+            if (mainHeroRect.intersects(enemyRect)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private synchronized void explosion(Bomb bomb) {
@@ -219,7 +253,7 @@ public class GameModel implements GameAction {
         for (Pair<Double, Double> coordinates : enemyCoordinates) {
             enemyes.add(new Enemy(coordinates.getKey(), coordinates.getValue(),
                     Settings.OBJECT_SIZE - 4,
-                    new ArtificialIntelligence(this), eventManager));
+                    new ArtificialIntelligence(this), this, eventManager));
         }
     }
 
@@ -313,6 +347,25 @@ public class GameModel implements GameAction {
             }
         }
         return true;
+    }
+
+    private boolean checkMainHeroCollision(Rectangle mainHeroRect, Rectangle otherRect) {
+        return !mainHeroRect.intersects(otherRect);
+    }
+
+    private List<Enemy> checkEnemyesCollision(Rectangle otherRect) {
+        List<Enemy> collisionEnemy = new ArrayList<>();
+        for (Enemy enemy : enemyes) {
+            int enemyPositionX = (int) enemy.getPositionX();
+            int enemyPositionY = (int) enemy.getPositionY();
+            int enemySize = (int) enemy.getSize();
+            Rectangle enemyRect = new Rectangle(enemyPositionX, enemyPositionY, enemySize, enemySize);
+
+            if (otherRect.intersects(enemyRect)) {
+                collisionEnemy.add(enemy);
+            }
+        }
+        return collisionEnemy;
     }
 
     private boolean checkBombsCollision(Rectangle mainHeroRect, Rectangle mainHeroPrevRect) {
