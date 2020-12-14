@@ -28,7 +28,7 @@ public class GameController {
 
         model.getMainHero().stop();
 
-        if (model.checkMainHeroIsDeath()){
+        if (model.checkMainHeroOnDeath()){
             GameModel.setGameState(GameState.FINISHED);
             System.out.println("GAME OVER");
         }

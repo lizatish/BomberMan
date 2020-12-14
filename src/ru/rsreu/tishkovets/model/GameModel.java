@@ -138,11 +138,16 @@ public class GameModel implements GameAction {
 
     public synchronized void removeExplosion(Explosion explosion) {
         //        TODO: написать проверку на пересечение с игроками и монстрами
-        if (checkMainHeroIsDeath()) {
+        if (checkMainHeroOnDeath()) {
             setGameState(GameState.FINISHED);
-
             System.out.println("GAME OVER");
         }
+        for (Enemy enemy: enemyes){
+            if (checkEnemyOnDeath(enemy)){
+                removeEnemy(enemy);
+            }
+        }
+
 
         eventManager.notify(EventType.EXPLOSION_REMOVE, new ExplosionsEventData(createExplosionData(true)));
         explosions.remove(explosion);
@@ -157,8 +162,25 @@ public class GameModel implements GameAction {
                 createEnemyesData(), createBoxesData());
     }
 
+    public synchronized void removeEnemy(Enemy enemy) {
+        enemyes.remove(enemy);
+    }
 
-    public boolean checkMainHeroIsDeath() {
+    public boolean checkEnemyOnDeath(Enemy enemy) {
+        Rectangle enemyRect = new Rectangle((int) enemy.getPositionX(),
+                (int) enemy.getPositionY(), (int) enemy.getSize(), (int) enemy.getSize());
+
+        for (Explosion explosion : explosions) {
+            Rectangle explosionRect = new Rectangle((int) explosion.getPositionX(),
+                    (int) explosion.getPositionY(), (int) explosion.getSize(), (int) explosion.getSize());
+            if (enemyRect.intersects(explosionRect)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public synchronized boolean checkMainHeroOnDeath() {
         Rectangle mainHeroRect = new Rectangle((int) mainHero.getPositionX(),
                 (int) mainHero.getPositionY(), (int) mainHero.getSize(), (int) mainHero.getSize());
 
@@ -349,24 +371,6 @@ public class GameModel implements GameAction {
         return true;
     }
 
-    private boolean checkMainHeroCollision(Rectangle mainHeroRect, Rectangle otherRect) {
-        return !mainHeroRect.intersects(otherRect);
-    }
-
-    private List<Enemy> checkEnemyesCollision(Rectangle otherRect) {
-        List<Enemy> collisionEnemy = new ArrayList<>();
-        for (Enemy enemy : enemyes) {
-            int enemyPositionX = (int) enemy.getPositionX();
-            int enemyPositionY = (int) enemy.getPositionY();
-            int enemySize = (int) enemy.getSize();
-            Rectangle enemyRect = new Rectangle(enemyPositionX, enemyPositionY, enemySize, enemySize);
-
-            if (otherRect.intersects(enemyRect)) {
-                collisionEnemy.add(enemy);
-            }
-        }
-        return collisionEnemy;
-    }
 
     private boolean checkBombsCollision(Rectangle mainHeroRect, Rectangle mainHeroPrevRect) {
         for (Bomb bomb : bombs) {

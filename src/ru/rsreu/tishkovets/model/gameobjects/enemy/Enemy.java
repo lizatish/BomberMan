@@ -58,6 +58,14 @@ public class Enemy extends Person implements Runnable {
             moveRight();
         }
 
+        if (model.checkEnemyOnDeath(this)) {
+            model.removeEnemy(this);
+            this.isAlive = false;
+        }
+        if (model.checkMainHeroOnDeath()) {
+            GameModel.setGameState(GameState.FINISHED);
+            System.out.println("GAME OVER");
+        }
         // TODO проверка на смерть врага
     }
 
