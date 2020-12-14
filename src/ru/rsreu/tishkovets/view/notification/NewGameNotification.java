@@ -24,7 +24,7 @@ public class NewGameNotification {
         );
         gc.setFont(new Font(FONT_TYPE, 68));
         gc.fillText(
-                "Press Enter for start game",
+                "Press Enter for start new game \n Press F2 to continue saved game",
                 Settings.FIELD_WIDTH / 2,
                 Settings.FIELD_HEIGHT * 3 / 4
         );

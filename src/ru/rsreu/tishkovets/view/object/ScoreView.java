@@ -38,6 +38,12 @@ public class ScoreView implements EventListener {
                 positionX,
                 posotionY
         );
+
+        gc.fillText(
+                String.format("F1 - save game"),
+                120,
+                posotionY
+        );
     }
 
     @Override

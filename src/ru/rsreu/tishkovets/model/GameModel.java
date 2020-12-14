@@ -1,6 +1,7 @@
 package ru.rsreu.tishkovets.model;
 
 import java.awt.*;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -22,10 +23,11 @@ import ru.rsreu.tishkovets.model.gameobjects.bomb.Explosion;
 import ru.rsreu.tishkovets.model.gameobjects.enemy.ArtificialIntelligence;
 import ru.rsreu.tishkovets.model.gameobjects.enemy.Enemy;
 
-public class GameModel implements GameAction {
+public class GameModel implements GameAction, Serializable {
 
     private static GameState gameState = GameState.NEW;
     private static int Score;
+    private static final long serialVersionUID = 1L;
 
     private final EventManager eventManager;
     private final MainHero mainHero;

@@ -4,9 +4,11 @@ import ru.rsreu.tishkovets.events.GameEventType;
 import ru.rsreu.tishkovets.events.MovableEventType;
 import ru.rsreu.tishkovets.model.GameModel;
 import ru.rsreu.tishkovets.model.GameState;
+import ru.rsreu.tishkovets.model.Serializator;
 
 public class GameController {
-    private final GameModel model;
+    private GameModel model;
+    private final Serializator serializator = new Serializator();
 
     public GameController(GameModel model) {
         this.model = model;
@@ -32,10 +34,15 @@ public class GameController {
             GameModel.setGameState(GameState.END);
             System.out.println("GAME OVER");
         }
-        System.out.println(GameModel.getScore());;
+        System.out.println(GameModel.getScore());
+        ;
     }
 
     public void startAction(GameEventType gameEventType) {
-        gameEventType.startAction(model);
+        if (gameEventType == GameEventType.LOAD_GAME && !GameModel.getGameState().equals(GameState.RUNNING)) {
+            model = serializator.loadState();
+        }
+        if (!(GameModel.getGameState().equals(GameState.RUNNING) && gameEventType == GameEventType.START)) // TODO не работает
+            gameEventType.startAction(model);
     }
 }

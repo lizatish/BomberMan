@@ -1,6 +1,7 @@
 package ru.rsreu.tishkovets.events;
 
 import ru.rsreu.tishkovets.model.GameAction;
+import ru.rsreu.tishkovets.model.Serializator;
 
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
@@ -27,9 +28,22 @@ public enum GameEventType {
         public void startAction(GameAction game) {
             game.placeBomb();
         }
+    },
+    SAVE_GAME(Arrays.asList(KeyEvent.getKeyText(KeyEvent.VK_F1).toUpperCase())) {
+        @Override
+        public void startAction(GameAction game) {
+            serializator.saveState(game);
+        }
+    },
+    LOAD_GAME(Arrays.asList(KeyEvent.getKeyText(KeyEvent.VK_F2).toUpperCase())) {
+        @Override
+        public void startAction(GameAction game) {
+            game.start();
+        }
     };
 
     private final List<String> keyNames;
+    protected final Serializator serializator = new Serializator();
 
     GameEventType(List<String> keyNames) {
         this.keyNames = keyNames;
@@ -50,7 +64,6 @@ public enum GameEventType {
         }
         return result;
     }
-
 
 
     public List<String> getKeyName() {
