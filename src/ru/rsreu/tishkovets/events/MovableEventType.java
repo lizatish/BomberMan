@@ -1,6 +1,5 @@
 package ru.rsreu.tishkovets.events;
 
-
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.List;
@@ -39,7 +38,6 @@ public enum MovableEventType {
         }
         return result;
     }
-
 
     public List<String> getKeyName() {
         return keyNames;

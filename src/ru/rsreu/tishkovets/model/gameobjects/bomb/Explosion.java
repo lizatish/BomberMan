@@ -5,6 +5,8 @@ import ru.rsreu.tishkovets.model.GameModel;
 import ru.rsreu.tishkovets.model.GameState;
 import ru.rsreu.tishkovets.model.gameobjects.BaseObject;
 
+import java.io.Serializable;
+
 public class Explosion extends BaseObject implements Runnable {
     private final GameModel model;
     private boolean isAlive;

@@ -67,6 +67,7 @@ public class Enemy extends Person implements Runnable {
         }
         if (model.checkMainHeroOnDeath()) {
             GameModel.setGameState(GameState.END);
+            model.finishGame();
             System.out.println("GAME OVER");
         }
     }

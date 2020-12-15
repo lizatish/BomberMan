@@ -1,5 +1,6 @@
 package ru.rsreu.tishkovets.model.gameobjects;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 public class Wall extends BaseObject {

@@ -1,7 +1,9 @@
 package ru.rsreu.tishkovets.model.gameobjects;
 
 
-public abstract class BaseObject {
+import java.io.Serializable;
+
+public abstract class BaseObject implements Serializable {
     protected double positionX;
     protected double positionY;
     protected double prevPositionX;

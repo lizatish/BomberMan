@@ -40,8 +40,8 @@ public class ScoreView implements EventListener {
         );
 
         gc.fillText(
-                String.format("F1 - save game"),
-                120,
+                "F1 - save game   P - pause game",
+                250,
                 posotionY
         );
     }

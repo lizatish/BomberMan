@@ -29,6 +29,9 @@ public enum EventType {
     },
     SCORE_UPDATE {
 
+    },
+    END_GAME {
+
     };
 
     public void subscribe(EventListener listener) {

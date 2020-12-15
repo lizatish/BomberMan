@@ -5,6 +5,8 @@ import ru.rsreu.tishkovets.events.EventManager;
 import ru.rsreu.tishkovets.model.GameModel;
 import ru.rsreu.tishkovets.model.GameState;
 
+import java.io.Serializable;
+
 public abstract class Person extends BaseObject {
     protected double speed = 1;
     protected EventManager eventManager;

@@ -4,8 +4,10 @@ package ru.rsreu.tishkovets.model.gameobjects.enemy;
 import ru.rsreu.tishkovets.events.MovableEventType;
 import ru.rsreu.tishkovets.model.GameModel;
 
+import java.io.Serializable;
 
-public class ArtificialIntelligence {
+
+public class ArtificialIntelligence implements Serializable {
 
     private GameModel model;
     private Enemy enemy;

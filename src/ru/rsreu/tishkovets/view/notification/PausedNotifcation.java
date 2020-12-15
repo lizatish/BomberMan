@@ -11,6 +11,7 @@ public class PausedNotifcation {
     private static final String FONT_TYPE = "TimesRoman";
 
     public void render(GraphicsContext gc) {
+        gc.clearRect(0, 0, Settings.FIELD_WIDTH, Settings.FIELD_HEIGHT);
         gc.setFont(new Font(FONT_TYPE, 128));
         gc.setFill(Color.BROWN);
         gc.setTextAlign(TextAlignment.CENTER);

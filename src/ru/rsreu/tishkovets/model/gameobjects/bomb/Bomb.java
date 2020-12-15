@@ -9,6 +9,8 @@ import ru.rsreu.tishkovets.model.GameModel;
 import ru.rsreu.tishkovets.model.GameState;
 import ru.rsreu.tishkovets.model.gameobjects.BaseObject;
 
+import java.io.Serializable;
+
 public class Bomb extends BaseObject implements Runnable {
 
     private final EventManager eventManager;

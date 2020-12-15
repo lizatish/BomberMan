@@ -12,7 +12,7 @@ public class Serializator {
         try {
             fos = new FileOutputStream("SaveState.save");
             oos = new ObjectOutputStream(fos);
-            synchronized (this) {
+            synchronized (gameModel) {
                 oos.writeObject(gameModel);
             }
         } catch (IOException e) {

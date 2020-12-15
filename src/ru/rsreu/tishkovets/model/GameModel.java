@@ -26,7 +26,7 @@ import ru.rsreu.tishkovets.model.gameobjects.enemy.Enemy;
 public class GameModel implements GameAction, Serializable {
 
     private static GameState gameState = GameState.NEW;
-    private static int Score;
+    private int Score;
     private static final long serialVersionUID = 1L;
 
     private final EventManager eventManager;
@@ -48,7 +48,7 @@ public class GameModel implements GameAction, Serializable {
         generateEnemyes();
     }
 
-    public static int getScore() {
+    public int getScore() {
         return Score;
     }
 
@@ -75,6 +75,10 @@ public class GameModel implements GameAction, Serializable {
             gameState = GameState.RUNNING;
             update(EventType.INIT_UPDATE);
         }
+    }
+
+    public void finishGame() {
+        eventManager.notify(EventType.END_GAME, new ScoreEventData(Score, gameState));
     }
 
     public void generateWallsAndBoxes() {
@@ -151,6 +155,7 @@ public class GameModel implements GameAction, Serializable {
     public synchronized void removeExplosion(Explosion explosion) {
         if (checkMainHeroOnDeath()) {
             setGameState(GameState.END);
+            finishGame();
             System.out.println("GAME OVER");
         }
         for (Enemy enemy : enemies) {
@@ -178,6 +183,7 @@ public class GameModel implements GameAction, Serializable {
         changeScore(100);
         if (enemies.size() == 0) {
             setGameState(GameState.FINISHED);
+            finishGame();
         }
     }
 

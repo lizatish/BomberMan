@@ -24,6 +24,7 @@ public class WallsView implements EventListener {
     }
 
     public void render(EventData data) {
+//        gc.clearRect(0, 0, Settings.FIELD_WIDTH, Settings.FIELD_HEIGHT);
         InitEventData renderData = (InitEventData)data;
         List<BaseData> walls = renderData.getWallsData();
         for (BaseData wall : walls) {
