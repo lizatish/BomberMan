@@ -102,9 +102,21 @@ public class GameModel implements GameAction, Serializable {
             bombCount--;
 
             double horizontalStep = getHorizontalStep();
-            double bombPositionX = mainHero.getPositionX() - mainHero.getPositionX() % horizontalStep;
-            double bombPositionY = mainHero.getPositionY() - mainHero.getPositionY() % Settings.OBJECT_SIZE;
+            double bombPositionX;
+            double bombPositionY;
             double bombSize = mainHero.getSize();
+            double xStep = mainHero.getPositionX() % horizontalStep;
+            double yStep = mainHero.getPositionY() % Settings.OBJECT_SIZE;
+            if (xStep > horizontalStep / 2) {
+                bombPositionX = mainHero.getPositionX() + horizontalStep - xStep;
+            } else {
+                bombPositionX = mainHero.getPositionX() - xStep;
+            }
+            if (yStep > Settings.OBJECT_SIZE / 2) {
+                bombPositionY = mainHero.getPositionY() + Settings.OBJECT_SIZE - yStep;
+            } else {
+                bombPositionY = mainHero.getPositionY() - yStep;
+            }
 
             Bomb bomb = new Bomb(bombPositionX, bombPositionY, bombSize, eventManager, this);
             bombs.add(bomb);
