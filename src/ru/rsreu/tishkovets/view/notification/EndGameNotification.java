@@ -19,7 +19,7 @@ public class EndGameNotification implements EventListener {
     public void render(EventData data) {
         ScoreEventData renderData = (ScoreEventData) data;
         gc.clearRect(0, 0, Settings.FIELD_WIDTH, Settings.FIELD_HEIGHT);
-        System.out.println(1111111111);
+
         gc.setFont(new javafx.scene.text.Font(FONT_TYPE, 128));
         gc.setFill(javafx.scene.paint.Color.BROWN);
         gc.setTextAlign(TextAlignment.CENTER);

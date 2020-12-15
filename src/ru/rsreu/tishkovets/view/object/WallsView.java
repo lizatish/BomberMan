@@ -34,7 +34,7 @@ public class WallsView implements EventListener {
 
     @Override
     public void update(EventData data) {
-//        System.out.println("Walls update");
+
         render(data);
     }
 }

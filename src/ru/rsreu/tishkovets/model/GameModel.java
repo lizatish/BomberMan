@@ -59,6 +59,7 @@ public class GameModel implements GameAction, Serializable {
 
     @Override
     public void start() {
+
         if (GameState.NEW == gameState) {
             gameState = GameState.RUNNING;
             update(EventType.INIT_UPDATE);
@@ -168,7 +169,6 @@ public class GameModel implements GameAction, Serializable {
         if (checkMainHeroOnDeath()) {
             setGameState(GameState.END);
             finishGame();
-            System.out.println("GAME OVER");
         }
         for (Enemy enemy : enemies) {
             if (checkEnemyOnDeath(enemy)) {

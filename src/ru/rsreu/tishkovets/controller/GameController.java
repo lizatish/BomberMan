@@ -34,17 +34,15 @@ public class GameController {
         if (model.checkMainHeroOnDeath()) {
             GameModel.setGameState(GameState.END);
             model.finishGame();
-            System.out.println("GAME OVER");
         }
     }
 
     public void startAction(GameEventType gameEventType) {
-        if (GameModel.getGameState().equals(GameState.NEW)) {
-            if (gameEventType == GameEventType.LOAD_GAME) {
-                model = serializator.loadState();
-                gameEventType.startAction(model);
-            }
-            else if (gameEventType == GameEventType.START) {
+        if (gameEventType == GameEventType.LOAD_GAME) {
+            model = serializator.loadState();
+            gameEventType.startAction(model);
+        } else if (gameEventType == GameEventType.START) {
+            if (GameModel.getGameState().equals(GameState.NEW)) {
                 gameEventType.startAction(model);
             }
         } else {
