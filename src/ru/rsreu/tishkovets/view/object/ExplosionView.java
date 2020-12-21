@@ -3,7 +3,6 @@ package ru.rsreu.tishkovets.view.object;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import ru.rsreu.tishkovets.Settings;
-import ru.rsreu.tishkovets.events.data.BaseEventData;
 import ru.rsreu.tishkovets.events.data.EventData;
 import ru.rsreu.tishkovets.events.data.ExplosionsEventData;
 import ru.rsreu.tishkovets.events.data.object.BaseData;

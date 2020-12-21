@@ -3,13 +3,11 @@ package ru.rsreu.tishkovets.model.gameobjects.bomb;
 import ru.rsreu.tishkovets.Settings;
 import ru.rsreu.tishkovets.events.EventManager;
 import ru.rsreu.tishkovets.events.EventType;
-import ru.rsreu.tishkovets.events.data.object.BaseData;
 import ru.rsreu.tishkovets.events.data.BaseEventData;
+import ru.rsreu.tishkovets.events.data.object.BaseData;
 import ru.rsreu.tishkovets.model.GameModel;
 import ru.rsreu.tishkovets.model.GameState;
 import ru.rsreu.tishkovets.model.gameobjects.BaseObject;
-
-import java.io.Serializable;
 
 public class Bomb extends BaseObject implements Runnable {
 

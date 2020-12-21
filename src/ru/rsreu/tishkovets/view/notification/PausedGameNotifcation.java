@@ -7,7 +7,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import ru.rsreu.tishkovets.Settings;
 
-public class PausedNotifcation {
+public class PausedGameNotifcation {
     private static final String FONT_TYPE = "TimesRoman";
 
     public void render(GraphicsContext gc) {

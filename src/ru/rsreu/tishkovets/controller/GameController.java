@@ -1,9 +1,7 @@
 package ru.rsreu.tishkovets.controller;
 
-import ru.rsreu.tishkovets.events.EventType;
 import ru.rsreu.tishkovets.events.GameEventType;
 import ru.rsreu.tishkovets.events.MovableEventType;
-import ru.rsreu.tishkovets.events.data.ScoreEventData;
 import ru.rsreu.tishkovets.model.GameModel;
 import ru.rsreu.tishkovets.model.GameState;
 import ru.rsreu.tishkovets.model.Serializator;
@@ -40,7 +38,9 @@ public class GameController {
     public void startAction(GameEventType gameEventType) {
         if (gameEventType == GameEventType.LOAD_GAME) {
             model = serializator.loadState();
-            gameEventType.startAction(model);
+            if (model != null) {
+                gameEventType.startAction(model);
+            }
         } else if (gameEventType == GameEventType.START) {
             if (GameModel.getGameState().equals(GameState.NEW)) {
                 gameEventType.startAction(model);

@@ -1,26 +1,24 @@
 package ru.rsreu.tishkovets.view;
 
 import javafx.animation.AnimationTimer;
-import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import ru.rsreu.tishkovets.Settings;
 import ru.rsreu.tishkovets.controller.GameController;
-import ru.rsreu.tishkovets.events.GameEventType;
-import ru.rsreu.tishkovets.events.MovableEventType;
 import ru.rsreu.tishkovets.events.EventManager;
 import ru.rsreu.tishkovets.events.EventType;
+import ru.rsreu.tishkovets.events.GameEventType;
+import ru.rsreu.tishkovets.events.MovableEventType;
 import ru.rsreu.tishkovets.model.GameModel;
 import ru.rsreu.tishkovets.model.GameState;
 import ru.rsreu.tishkovets.view.notification.EndGameNotification;
 import ru.rsreu.tishkovets.view.notification.FinishedGameNotification;
 import ru.rsreu.tishkovets.view.notification.NewGameNotification;
-import ru.rsreu.tishkovets.view.notification.PausedNotifcation;
+import ru.rsreu.tishkovets.view.notification.PausedGameNotifcation;
 import ru.rsreu.tishkovets.view.object.*;
 
 import java.util.ArrayList;
@@ -77,7 +75,7 @@ public class GameView {
                     NewGameNotification notification = new NewGameNotification();
                     notification.render(gc);
                 } else if (GameModel.getGameState().equals(GameState.PAUSED)) {
-                    PausedNotifcation notification = new PausedNotifcation();
+                    PausedGameNotifcation notification = new PausedGameNotifcation();
                     notification.render(gc);
                 } else if (currentState.equals(GameState.RUNNING)) {
                     MovableEventType eventType = MovableEventType.getMovableOperationByKeyName(keyboardInput);

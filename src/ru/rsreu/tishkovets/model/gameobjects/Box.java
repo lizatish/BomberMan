@@ -2,8 +2,6 @@ package ru.rsreu.tishkovets.model.gameobjects;
 
 import ru.rsreu.tishkovets.events.data.object.BaseData;
 
-import java.io.Serializable;
-
 public class Box extends BaseObject {
 
     public Box(double x, double y, double size) {

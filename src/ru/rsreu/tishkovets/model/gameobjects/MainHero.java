@@ -5,8 +5,6 @@ import ru.rsreu.tishkovets.events.EventType;
 import ru.rsreu.tishkovets.events.data.PersonEventData;
 import ru.rsreu.tishkovets.events.data.object.PersonData;
 
-import java.io.Serializable;
-
 public class MainHero extends Person  {
 
     public MainHero(double x, double y, double size, EventManager eventManager) {

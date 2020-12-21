@@ -3,10 +3,9 @@ package ru.rsreu.tishkovets;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import ru.rsreu.tishkovets.controller.GameController;
-import ru.rsreu.tishkovets.events.EventType;
-import ru.rsreu.tishkovets.view.GameView;
 import ru.rsreu.tishkovets.events.EventManager;
 import ru.rsreu.tishkovets.model.GameModel;
+import ru.rsreu.tishkovets.view.GameView;
 
 public class Main extends Application {
 

@@ -7,7 +7,6 @@ import ru.rsreu.tishkovets.Settings;
 import ru.rsreu.tishkovets.events.EventListener;
 import ru.rsreu.tishkovets.events.data.EventData;
 import ru.rsreu.tishkovets.events.data.ScoreEventData;
-import ru.rsreu.tishkovets.model.GameModel;
 
 public class EndGameNotification implements EventListener {
     private static final String FONT_TYPE = "TimesRoman";

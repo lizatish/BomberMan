@@ -48,10 +48,6 @@ public class GameModel implements GameAction, Serializable {
         generateEnemyes();
     }
 
-    public int getScore() {
-        return Score;
-    }
-
     @Override
     public boolean isPaused() {
         return GameState.PAUSED.equals(gameState);
@@ -75,6 +71,7 @@ public class GameModel implements GameAction, Serializable {
         } else {
             gameState = GameState.RUNNING;
             update(EventType.INIT_UPDATE);
+            eventManager.notify(EventType.SCORE_UPDATE, new ScoreEventData(Score, gameState));
         }
     }
 
@@ -394,7 +391,6 @@ public class GameModel implements GameAction, Serializable {
         return boxesData;
     }
 
-    // TODO удалить и все что связано
     private boolean checkOutsideWallsCollision(Rectangle person, double speed, MovableEventType eventType) {
         if (eventType == MovableEventType.UP) {
             person.y -= speed;
